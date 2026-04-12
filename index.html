@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrganiSoto</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Outfit',system-ui,sans-serif;}
+:root{
+  --bg:#0c0b14;--bg2:#110f20;--bg3:#17152b;--card:#1c192e;--card2:#201d35;
+  --pu:#6c63b8;--pu2:#9990d4;--pu3:#3d3875;--pu4:#2a2655;
+  --gr:#2a8c6e;--gr2:#4ab897;--gr3:#1a5c48;
+  --tx:#d4d0f0;--tx2:#8a85b8;--tx3:#55517a;
+  --bd:rgba(108,99,184,0.18);--bd2:rgba(108,99,184,0.32);
+  --blur:blur(14px);
+}
+body{background:var(--bg);color:var(--tx);min-height:100vh;}
+.app{max-width:1080px;margin:0 auto;padding-bottom:40px;}
+
+/* ===== HEADER ===== */
+.hdr{
+  background:rgba(17,15,32,0.72);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border-bottom:1px solid var(--bd);
+  padding:11px 18px;
+  display:flex;
+  align-items:center;
+  position:sticky;top:0;z-index:100;
+}
+.logo-wrap{
+  position:absolute;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:8px;
+}
+.logo-icon{
+  width:28px;height:28px;
+  animation: logoSpin 6s linear infinite, logoColorCycle 4s ease-in-out infinite;
+}
+@keyframes logoSpin{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+@keyframes logoColorCycle{
+  0%{filter:hue-rotate(0deg) brightness(1);}
+  25%{filter:hue-rotate(60deg) brightness(1.2);}
+  50%{filter:hue-rotate(120deg) brightness(1);}
+  75%{filter:hue-rotate(200deg) brightness(1.2);}
+  100%{filter:hue-rotate(360deg) brightness(1);}
+}
+.logo{font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--pu2),var(--gr2),var(--pu2));
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:logoTextShimmer 3s linear infinite;
+}
+@keyframes logoTextShimmer{
+  0%{background-position:0%}100%{background-position:200%}
+}
+.logo em{font-style:normal;}
+.clk{font-size:12px;color:var(--tx3);margin-left:auto;letter-spacing:1px;font-variant-numeric:tabular-nums;}
+
+/* ===== TABS ===== */
+.tabs{
+  display:flex;
+  background:rgba(17,15,32,0.6);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border-bottom:1px solid var(--bd);
+}
+.tab{flex:1;padding:12px 6px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.tab svg{width:14px;height:14px;flex-shrink:0;}
+.tab:hover{color:var(--pu2);}
+.tab.on{color:var(--pu2);border-bottom-color:var(--pu);}
+
+.sec{display:none;padding:16px;}
+.sec.on{display:block;}
+
+.card{background:rgba(28,25,46,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+.lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:6px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.row1{margin-bottom:10px;}
+
+input[type=text],input[type=url],input[type=date],select,textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:8px;
+  color:var(--tx);padding:8px 12px;font-size:13px;outline:none;transition:border-color .2s;
+  font-family:'Outfit',sans-serif;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--pu);box-shadow:0 0 0 2px rgba(108,99,184,0.12);}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.7);}
+select option{background:var(--bg2);}
+
+.btn{padding:8px 16px;border-radius:8px;border:1px solid var(--pu3);background:rgba(108,99,184,0.12);color:var(--pu2);font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s;display:inline-flex;align-items:center;gap:5px;font-family:'Outfit',sans-serif;}
+.btn:hover{background:rgba(108,99,184,0.28);transform:translateY(-1px);}
+.btn-g{border-color:var(--gr3);background:rgba(42,140,110,0.12);color:var(--gr2);}
+.btn-g:hover{background:rgba(42,140,110,0.28);}
+.btn-xs{padding:5px 12px;font-size:10px;}
+.btn-red{border-color:#5a2030;background:rgba(180,40,60,0.1);color:#c0405a;}
+
+/* ADD ALARM BTN */
+.add-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px 16px;border:1px dashed var(--bd2);border-radius:10px;color:var(--tx3);font-size:12px;letter-spacing:1px;transition:all .25s;margin-bottom:14px;background:transparent;}
+.add-row:hover{border-color:var(--pu);color:var(--pu2);background:rgba(108,99,184,0.06);}
+.add-row svg{width:20px;height:20px;flex-shrink:0;}
+
+/* ALARM GROUPS */
+.ag-hdr{display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 14px;border-radius:10px;background:rgba(32,29,53,0.7);backdrop-filter:blur(6px);border:1px solid var(--bd);margin-bottom:3px;transition:all .2s;}
+.ag-hdr:hover{border-color:var(--bd2);background:rgba(32,29,53,0.9);}
+.ag-hdr svg{width:16px;height:16px;color:var(--pu2);}
+.ag-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx2);flex:1;}
+.ag-ct{font-size:11px;color:var(--tx3);}
+.ag-chev{font-size:10px;color:var(--tx3);transition:transform .25s;display:inline-flex;}
+.ag-body{display:none;padding:4px 0 8px;}
+.ag-body.open{display:block;}
+
+.ai{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid rgba(108,99,184,0.08);transition:background .15s;border-radius:6px;}
+.ai:last-child{border-bottom:none;}
+.ai:hover{background:rgba(108,99,184,0.04);}
+.ai-time{font-size:20px;font-weight:600;color:var(--pu2);min-width:68px;font-variant-numeric:tabular-nums;letter-spacing:-0.5px;}
+.ai-meta{flex:1;}
+.ai-name{font-size:13px;color:var(--tx);}
+.ai-sub{font-size:10px;color:var(--tx3);margin-top:2px;display:flex;align-items:center;gap:5px;}
+.ai-sub svg{width:10px;height:10px;}
+.ai-sp{font-size:10px;color:var(--gr2);margin-top:3px;display:flex;align-items:center;gap:4px;}
+.ai-sp svg{width:10px;height:10px;}
+.tog{width:38px;height:21px;background:var(--pu4);border-radius:11px;border:1px solid var(--bd2);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.tog.on{background:var(--pu3);}
+.tog::after{content:'';position:absolute;width:15px;height:15px;background:#b0aade;border-radius:50%;top:2px;left:2px;transition:left .2s;}
+.tog.on::after{left:19px;background:#d0ccf5;}
+.xbtn{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:4px;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.xbtn:hover{color:#c0405a;background:rgba(180,40,60,0.12);}
+.xbtn svg{width:13px;height:13px;}
+
+/* ===== MODERN TIME PICKER ===== */
+.drum-wrap{
+  background:rgba(28,25,46,0.8);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--bd2);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:14px;
+  display:none;
+  box-shadow:0 8px 40px rgba(0,0,0,0.4);
+}
+.drum-wrap.open{display:block;animation:drumIn .25s ease-out;}
+@keyframes drumIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.drum-pickers{display:flex;justify-content:center;align-items:center;gap:6px;margin-bottom:18px;}
+.drum-sep{font-size:30px;color:var(--pu2);font-weight:300;padding:0 6px;animation:sepPulse 2s ease-in-out infinite;}
+@keyframes sepPulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.drum-vp{height:130px;overflow:hidden;position:relative;width:76px;cursor:ns-resize;}
+.drum-hl{
+  position:absolute;top:45px;left:0;right:0;height:42px;
+  border-top:1px solid rgba(108,99,184,0.35);
+  border-bottom:1px solid rgba(108,99,184,0.35);
+  background:rgba(108,99,184,0.07);
+  pointer-events:none;
+  border-radius:6px;
+}
+.drum-track{display:flex;flex-direction:column;user-select:none;}
+.drum-item{height:42px;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--tx3);flex-shrink:0;font-variant-numeric:tabular-nums;transition:all .12s;}
+.drum-item.sel{color:var(--pu2);font-size:30px;font-weight:600;text-shadow:0 0 20px rgba(108,99,184,0.5);}
+.snd-opts{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;}
+.snd-opt{padding:5px 12px;border-radius:12px;border:1px solid var(--bd);background:transparent;color:var(--tx3);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:.5px;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:4px;}
+.snd-opt svg{width:10px;height:10px;}
+.snd-opt.on{border-color:var(--gr3);color:var(--gr2);background:rgba(42,140,110,0.1);}
+.snd-opt:hover{border-color:var(--pu);color:var(--pu2);}
+.drum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+
+/* ===== CALENDAR ===== */
+.cal-nav-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.cal-nbtn{background:transparent;border:1px solid var(--bd);color:var(--pu2);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;transition:all .2s;display:flex;align-items:center;gap:4px;}
+.cal-nbtn:hover{background:rgba(108,99,184,0.12);border-color:var(--pu);}
+.cal-nbtn svg{width:14px;height:14px;}
+.cal-month{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:2px;text-transform:uppercase;flex:1;text-align:center;}
+.cgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;}
+.dow{text-align:center;font-size:9px;letter-spacing:2px;color:var(--tx3);text-transform:uppercase;padding:6px 0;}
+.cday{min-height:70px;background:rgba(28,25,46,0.6);border:1px solid rgba(108,99,184,0.1);border-radius:8px;padding:6px;cursor:pointer;transition:all .2s;overflow:hidden;backdrop-filter:blur(4px);}
+.cday:hover{border-color:var(--pu);background:rgba(108,99,184,0.08);transform:translateY(-1px);}
+.cday.today{border-color:var(--gr);}
+.cday.dim{opacity:0.2;pointer-events:none;}
+.cday.sel{border-color:var(--pu);background:rgba(108,99,184,0.12);}
+.dnum{font-size:11px;color:var(--tx3);font-weight:500;}
+.cday.today .dnum{color:var(--gr2);font-weight:700;}
+.day-dots{display:flex;gap:2px;flex-wrap:wrap;margin-top:3px;}
+.ddot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dchip{font-size:7px;padding:2px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;margin-top:2px;letter-spacing:.2px;}
+
+/* DAY PANEL */
+.day-panel{
+  background:rgba(17,15,32,0.78);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--bd2);
+  border-radius:14px;
+  padding:18px;
+  margin-top:14px;
+  animation:panelIn .2s ease-out;
+}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.dp-ttl{font-size:15px;color:var(--pu2);letter-spacing:1px;font-weight:600;}
+.hr-row{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(108,99,184,0.06);}
+.hr-lbl{font-size:10px;color:var(--tx3);min-width:38px;display:flex;align-items:center;gap:3px;}
+.hr-lbl svg{width:10px;height:10px;opacity:.5;}
+.hr-inp{flex:1;background:transparent;border:none;border-bottom:1px solid rgba(108,99,184,0.1);color:var(--tx);font-size:12px;padding:3px 2px;outline:none;font-family:'Outfit',sans-serif;transition:border-color .2s;}
+.hr-inp:focus{border-bottom-color:var(--pu);}
+.postit-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0;}
+.postit-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.postit{border-radius:8px;padding:8px 10px;min-width:92px;max-width:130px;min-height:66px;font-size:11px;position:relative;word-break:break-word;backdrop-filter:blur(6px);}
+.postit-x{position:absolute;top:4px;right:5px;cursor:pointer;background:none;border:none;color:inherit;opacity:.5;transition:opacity .15s;display:flex;align-items:center;}
+.postit-x:hover{opacity:1;}
+.postit-x svg{width:10px;height:10px;}
+.cdot{width:17px;height:17px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;transition:transform .15s;}
+.cdot:hover{transform:scale(1.2);}
+.cdot.sel{border-color:#fff;transform:scale(1.15);}
+
+/* CALENDAR DAY EVENTS */
+.day-ev-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(108,99,184,0.07);}
+.day-ev-row:last-child{border-bottom:none;}
+.day-ev-time{font-size:11px;color:var(--gr2);min-width:38px;font-weight:600;font-variant-numeric:tabular-nums;}
+.day-ev-title{font-size:12px;color:var(--tx);flex:1;}
+
+/* ===== AGENDA ===== */
+.ag-day-block{
+  background:rgba(28,25,46,0.55);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--bd);
+  border-radius:12px;
+  margin-bottom:10px;
+  overflow:hidden;
+  transition:border-color .2s;
+}
+.ag-day-block:hover{border-color:var(--bd2);}
+.ag-day-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;cursor:pointer;
+  background:rgba(32,29,53,0.5);
+  transition:background .2s;
+}
+.ag-day-head:hover{background:rgba(32,29,53,0.8);}
+.ag-day-date{font-size:13px;font-weight:600;color:var(--pu2);flex:1;}
+.ag-day-count{font-size:11px;color:var(--tx3);}
+.ag-day-chev{transition:transform .25s;display:flex;color:var(--tx3);}
+.ag-day-chev svg{width:14px;height:14px;}
+.ag-day-body{display:none;padding:8px 14px 12px;}
+.ag-day-body.open{display:block;animation:fadeIn .2s ease-out;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+.ev-card{background:rgba(28,25,46,0.5);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;}
+.ev-time{font-size:11px;color:var(--gr2);min-width:44px;font-weight:600;font-variant-numeric:tabular-nums;}
+.ev-info{flex:1;}
+.ev-ttl{font-size:13px;color:var(--tx);}
+.ev-dsc{font-size:11px;color:var(--tx3);margin-top:2px;}
+.badge{font-size:9px;padding:2px 7px;border-radius:8px;letter-spacing:.8px;text-transform:uppercase;}
+.b-trabajo{background:rgba(108,99,184,0.18);color:var(--pu2);}
+.b-proyecto{background:rgba(186,117,23,0.18);color:#d4a04a;}
+.b-personal{background:rgba(42,140,110,0.18);color:var(--gr2);}
+.b-cita{background:rgba(180,80,140,0.18);color:#cc88bb;}
+.sec-lbl{font-size:10px;letter-spacing:2px;color:var(--gr2);text-transform:uppercase;margin-bottom:8px;padding-left:10px;border-left:2px solid var(--gr);margin-top:16px;}
+.empty{text-align:center;padding:36px;color:var(--tx3);font-size:12px;}
+.empty svg{width:36px;height:36px;opacity:.3;margin:0 auto 10px;display:block;}
+
+/* ADD EVENT (agenda) */
+.add-ev-panel{
+  background:rgba(17,15,32,0.8);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--bd2);
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:16px;
+  display:none;
+}
+.add-ev-panel.open{display:block;animation:drumIn .25s ease-out;}
+.add-ev-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px 16px;border:1px dashed var(--bd2);border-radius:10px;color:var(--tx3);font-size:12px;letter-spacing:1px;transition:all .25s;margin-bottom:14px;background:transparent;}
+.add-ev-toggle:hover{border-color:var(--pu);color:var(--pu2);background:rgba(108,99,184,0.06);}
+.add-ev-toggle svg{width:20px;height:20px;}
+
+/* NOTIFS */
+.notif-area{position:relative;z-index:10;}
+.notif-box{
+  background:rgba(17,15,32,0.88);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--pu);
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:8px;
+  animation:notifIn .3s ease-out;
+  box-shadow:0 4px 24px rgba(108,99,184,0.25);
+}
+@keyframes notifIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.notif-ttl{font-size:13px;font-weight:600;color:var(--pu2);margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+.notif-ttl svg{width:14px;height:14px;}
+.notif-bdy{font-size:11px;color:var(--tx2);}
+.notif-acts{display:flex;gap:6px;margin-top:10px;}
+.notif-time-badge{font-size:10px;color:var(--gr2);background:rgba(42,140,110,0.12);border:1px solid rgba(42,140,110,0.25);border-radius:6px;padding:2px 8px;display:inline-flex;align-items:center;gap:4px;margin-top:4px;}
+.notif-time-badge svg{width:10px;height:10px;}
+
+/* PUSH NOTIF PERMISSION */
+.perm-banner{background:rgba(42,140,110,0.1);border:1px solid rgba(42,140,110,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gr2);}
+.perm-banner svg{width:18px;height:18px;flex-shrink:0;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--pu4);border-radius:2px;}
+
+/* BACKDROP BLUR for calendar day panel overlay */
+.cal-overlay{position:fixed;inset:0;z-index:50;display:none;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);}
+.cal-overlay.show{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo-wrap">
+    <svg class="logo-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14" r="12" stroke="#9990d4" stroke-width="1.5" fill="none"/>
+      <path d="M14 4 L14 14 L20 20" stroke="#4ab897" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="14" cy="14" r="2.5" fill="#6c63b8"/>
+      <circle cx="14" cy="5.5" r="1.5" fill="#4ab897"/>
+      <circle cx="22.5" cy="9.5" r="1.5" fill="#9990d4"/>
+    </svg>
+    <div class="logo">Organi<em>Soto</em></div>
+  </div>
+  <div class="clk" id="clk">--:--:--</div>
+</div>
+
+<!-- NOTIF PERMISSION BANNER -->
+<div id="permBanner" class="perm-banner" style="margin:6px 16px 0;display:none;">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+  <span>Activa las notificaciones para recibir alertas en tu dispositivo.</span>
+  <button class="btn btn-g btn-xs" onclick="askPushPerm()" style="margin-left:auto;white-space:nowrap;">Activar</button>
+</div>
+
+<div class="notif-area" id="notifArea" style="padding:0 16px;padding-top:4px;"></div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab on" onclick="goTab('alarmas',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    Alarmas
+  </div>
+  <div class="tab" onclick="goTab('calendario',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Calendario
+  </div>
+  <div class="tab" onclick="goTab('agenda',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+    Agenda
+  </div>
+</div>
+
+<!-- ========== ALARMAS ========== -->
+<div class="sec on" id="tab-alarmas">
+  <div class="add-row" onclick="toggleDrum()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    <span>Agregar alarma</span>
+  </div>
+
+  <div class="drum-wrap" id="drumWrap">
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);text-align:center;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pu2)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      Seleccionar hora
+    </div>
+    <div class="drum-pickers">
+      <div>
+        <div class="drum-vp" id="vpH"><div class="drum-hl"></div><div class="drum-track" id="trkH"></div></div>
+      </div>
+      <div class="drum-sep">:</div>
+      <div>
+        <div class="drum-vp" id="vpM"><div class="drum-hl"></div><div class="drum-track" id="trkM"></div></div>
+      </div>
+    </div>
+    <div class="drum-grid">
+      <div>
+        <div class="lbl">Nombre</div>
+        <input type="text" id="dName" placeholder="Ej: Despertar" />
+      </div>
+      <div>
+        <div class="lbl">Categoría</div>
+        <select id="dCat">
+          <option value="rutina">Rutina diaria</option>
+          <option value="trabajo">Trabajo</option>
+          <option value="recordatorio">Recordatorio</option>
+          <option value="custom">Personalizada</option>
+        </select>
+      </div>
+      <div>
+        <div class="lbl">Días</div>
+        <select id="dDays">
+          <option value="Todos los días">Todos los días</option>
+          <option value="Lun–Vie">Lun – Vie</option>
+          <option value="Sáb–Dom">Sáb – Dom</option>
+          <option value="Una vez">Una vez</option>
+        </select>
+      </div>
+      <div>
+        <div class="lbl">Sonido</div>
+        <div class="snd-opts">
+          <button class="snd-opt on" onclick="selSnd(this,'beep')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19 11,5"/></svg>
+            Beep
+          </button>
+          <button class="snd-opt" onclick="selSnd(this,'chime')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            Chime
+          </button>
+          <button class="snd-opt" onclick="selSnd(this,'pulse')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+            Pulso
+          </button>
+          <button class="snd-opt" onclick="selSnd(this,'none')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/></svg>
+            Mudo
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row1">
+      <div class="lbl">Spotify (link opcional)</div>
+      <input type="url" id="dSpot" placeholder="https://open.spotify.com/track/..." />
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn btn-xs" onclick="toggleDrum()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cancelar
+      </button>
+      <button class="btn btn-xs" onclick="testSnd()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21 5,3"/></svg>
+        Probar sonido
+      </button>
+      <button class="btn btn-g btn-xs" onclick="saveAlarm()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+        Guardar alarma
+      </button>
+    </div>
+  </div>
+
+  <div id="alarmGroups"></div>
+</div>
+
+<!-- ========== CALENDARIO ========== -->
+<div class="sec" id="tab-calendario">
+  <div class="cal-nav-row">
+    <button class="cal-nbtn" onclick="chMon(-1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+    </button>
+    <div class="cal-month" id="calLbl"></div>
+    <button class="cal-nbtn" onclick="chMon(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,18 15,12 9,6"/></svg>
+    </button>
+  </div>
+  <div class="cgrid" id="cgrid"></div>
+  <div id="dayPanel" style="display:none;"></div>
+</div>
+
+<!-- ========== AGENDA ========== -->
+<div class="sec" id="tab-agenda">
+
+  <!-- Toggle add event -->
+  <div class="add-ev-toggle" onclick="toggleAddEvent()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    <span>Agregar actividad o cita</span>
+  </div>
+
+  <div class="add-ev-panel" id="addEvPanel">
+    <div class="lbl" style="margin-bottom:12px;font-size:11px;display:flex;align-items:center;gap:6px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gr2)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Nueva actividad
+    </div>
+    <div class="row2">
+      <div><div class="lbl">Fecha</div><input type="date" id="evDate" /></div>
+      <div><div class="lbl">Hora</div>
+        <!-- MODERN TIME MINI PICKER -->
+        <div style="position:relative;">
+          <input type="text" id="evTimeDisplay" placeholder="08:00" readonly onclick="toggleTimeMini()" style="cursor:pointer;padding-right:32px;" />
+          <svg onclick="toggleTimeMini()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--tx3);cursor:pointer;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          <div id="timeMiniPop" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:200;background:rgba(17,15,32,0.95);backdrop-filter:blur(18px);border:1px solid var(--bd2);border-radius:12px;padding:14px 10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+            <div style="display:flex;justify-content:center;align-items:center;gap:4px;margin-bottom:10px;">
+              <div class="drum-vp" id="vpEH" style="width:60px;height:110px;"><div class="drum-hl"></div><div class="drum-track" id="trkEH"></div></div>
+              <div style="font-size:24px;color:var(--pu2);font-weight:300;padding:0 4px;animation:sepPulse 2s infinite;">:</div>
+              <div class="drum-vp" id="vpEM" style="width:60px;height:110px;"><div class="drum-hl"></div><div class="drum-track" id="trkEM"></div></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:6px;">
+              <button class="btn btn-xs" onclick="closeTimeMini()">OK</button>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="evTime" />
+      </div>
+    </div>
+    <div class="row1"><div class="lbl">Título</div><input type="text" id="evTitle" placeholder="Reunión, cita médica..." /></div>
+    <div class="row2">
+      <div><div class="lbl">Descripción</div><input type="text" id="evDesc" placeholder="Opcional" /></div>
+      <div><div class="lbl">Categoría</div>
+        <select id="evCat">
+          <option value="trabajo">Trabajo</option>
+          <option value="proyecto">Proyecto</option>
+          <option value="personal">Personal</option>
+          <option value="cita">Cita</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-xs" onclick="toggleAddEvent()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cancelar
+      </button>
+      <button class="btn btn-g" onclick="addEvent()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+        Guardar evento
+      </button>
+    </div>
+  </div>
+
+  <div id="agList"></div>
+</div>
+
+</div><!-- end .app -->
+
+<script>
+/* ===== STORAGE ===== */
+const ls=k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}};
+const lss=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const gA=()=>ls('os2_alarms')||[];
+const sA=v=>lss('os2_alarms',v);
+const gEv=()=>ls('os2_events')||[];
+const sEv=v=>lss('os2_events',v);
+const gD=d=>ls('os2_d_'+d)||{hours:{},postits:[]};
+const sD=(d,v)=>lss('os2_d_'+d,v);
+
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DOWS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const PCOLS=['#6c63b8','#2a8c6e','#8a5a8a','#8c6a2a','#2a608c','#8c3050'];
+const CATS={rutina:'Rutina diaria',trabajo:'Trabajo',recordatorio:'Recordatorio',custom:'Personalizada'};
+const CAT_ICONS={rutina:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>',trabajo:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>',recordatorio:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',custom:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>'};
+
+let calDate=new Date();
+let selDay=null;
+let selPCol=PCOLS[0];
+let drumSnd='beep';
+let dH=7,dM=0;
+let evH=8,evM=0;
+
+/* ===== CLOCK ===== */
+setInterval(()=>{
+  const n=new Date();
+  document.getElementById('clk').textContent=n.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+},1000);
+
+/* ===== TABS ===== */
+function goTab(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  el.classList.add('on');
+  if(id==='calendario')renderCal();
+  if(id==='agenda')renderAgenda();
+  if(id==='alarmas')renderAlarms();
+}
+
+/* ===== PUSH NOTIFICATIONS ===== */
+function checkPermBanner(){
+  if('Notification' in window && Notification.permission==='default'){
+    document.getElementById('permBanner').style.display='flex';
+  }
+}
+function askPushPerm(){
+  if(!('Notification' in window))return;
+  Notification.requestPermission().then(p=>{
+    if(p==='granted'){
+      document.getElementById('permBanner').style.display='none';
+      new Notification('OrganiSoto',{body:'¡Notificaciones activadas! 🎉',icon:''});
+    }
+  });
+}
+function sendPushNotif(title,body){
+  if('Notification' in window && Notification.permission==='granted'){
+    new Notification('OrganiSoto – '+title,{body,tag:'organisoto-'+Date.now()});
+  }
+}
+checkPermBanner();
+
+/* ===== DRUM (alarm) ===== */
+let drumOpen=false;
+function toggleDrum(){
+  drumOpen=!drumOpen;
+  document.getElementById('drumWrap').className='drum-wrap'+(drumOpen?' open':'');
+  if(drumOpen)initDrums();
+}
+
+function initDrums(){
+  const H=Array.from({length:24},(_,i)=>String(i).padStart(2,'0'));
+  const M=Array.from({length:60},(_,i)=>String(i).padStart(2,'0'));
+  makeDrum('trkH','vpH',H,dH,v=>{dH=v;});
+  makeDrum('trkM','vpM',M,dM,v=>{dM=v;});
+}
+
+function makeDrum(trackId,vpId,items,initVal,cb){
+  const track=document.getElementById(trackId);
+  const vp=document.getElementById(vpId);
+  const PAD=2;
+  const IH=42;
+  track.innerHTML='';
+  [...Array(PAD).fill(null),...items,...Array(PAD).fill(null)].forEach((v,i)=>{
+    const el=document.createElement('div');
+    el.className='drum-item'+(v===items[initVal]?' sel':'');
+    el.textContent=v!==null?v:'';
+    track.appendChild(el);
+  });
+  let cur=initVal;
+  const setPos=idx=>{
+    cur=Math.max(0,Math.min(items.length-1,idx));
+    track.style.transform=`translateY(${IH-(cur*IH)}px)`;
+    track.querySelectorAll('.drum-item').forEach((el,i)=>el.classList.toggle('sel',i-PAD===cur));
+    cb(cur);
+  };
+  setPos(initVal);
+  let sy=0,sc=0,dragging=false;
+  const onMove=e=>{
+    if(!dragging)return;
+    const y=e.touches?e.touches[0].clientY:e.clientY;
+    const diff=y-sy;
+    const newIdx=Math.round(sc-diff/IH);
+    setPos(newIdx);
+  };
+  const onEnd=()=>{dragging=false;};
+  vp.addEventListener('mousedown',e=>{dragging=true;sy=e.clientY;sc=cur;e.preventDefault();});
+  vp.addEventListener('touchstart',e=>{dragging=true;sy=e.touches[0].clientY;sc=cur;},{passive:true});
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onEnd);
+  document.addEventListener('touchmove',e=>{if(dragging){onMove(e);e.preventDefault();}},{passive:false});
+  document.addEventListener('touchend',onEnd);
+}
+
+/* ===== MINI TIME PICKER (agenda) ===== */
+let timeMiniOpen=false;
+function toggleTimeMini(){
+  timeMiniOpen=!timeMiniOpen;
+  document.getElementById('timeMiniPop').style.display=timeMiniOpen?'block':'none';
+  if(timeMiniOpen){
+    const H=Array.from({length:24},(_,i)=>String(i).padStart(2,'0'));
+    const M=Array.from({length:60},(_,i)=>String(i).padStart(2,'0'));
+    makeDrum('trkEH','vpEH',H,evH,v=>{evH=v;updateEvTime();});
+    makeDrum('trkEM','vpEM',M,evM,v=>{evM=v;updateEvTime();});
+  }
+}
+function closeTimeMini(){
+  timeMiniOpen=false;
+  document.getElementById('timeMiniPop').style.display='none';
+}
+function updateEvTime(){
+  const hh=String(evH).padStart(2,'0');
+  const mm=String(evM).padStart(2,'0');
+  document.getElementById('evTimeDisplay').value=hh+':'+mm;
+  document.getElementById('evTime').value=hh+':'+mm;
+}
+// Close on outside click
+document.addEventListener('click',e=>{
+  const pop=document.getElementById('timeMiniPop');
+  const disp=document.getElementById('evTimeDisplay');
+  if(timeMiniOpen && !pop.contains(e.target) && e.target!==disp){
+    closeTimeMini();
+  }
+});
+
+function selSnd(el,s){
+  drumSnd=s;
+  el.closest('.snd-opts').querySelectorAll('.snd-opt').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+function testSnd(){playSound(drumSnd);}
+
+function saveAlarm(){
+  const name=document.getElementById('dName').value.trim();
+  if(!name){document.getElementById('dName').focus();return;}
+  const hh=String(dH).padStart(2,'0');
+  const mm=String(dM).padStart(2,'0');
+  const alarms=gA();
+  alarms.push({id:Date.now(),time:hh+':'+mm,name,cat:document.getElementById('dCat').value,days:document.getElementById('dDays').value,sound:drumSnd,spotify:document.getElementById('dSpot').value.trim(),on:true});
+  sA(alarms);
+  document.getElementById('dName').value='';
+  document.getElementById('dSpot').value='';
+  toggleDrum();
+  renderAlarms();
+  sendPushNotif('Alarma guardada',`${name} a las ${hh}:${mm} – ${document.getElementById('dDays').value}`);
+}
+
+/* ===== RENDER ALARMS ===== */
+function renderAlarms(){
+  const alarms=gA();
+  const groups={rutina:[],trabajo:[],recordatorio:[],custom:[]};
+  alarms.forEach((a,i)=>{if(groups[a.cat])groups[a.cat].push({...a,_i:i});});
+  document.getElementById('alarmGroups').innerHTML=Object.entries(CATS).map(([cat,label])=>{
+    const list=groups[cat];
+    return`<div style="margin-bottom:8px;">
+      <div class="ag-hdr" onclick="togGrp(this)">
+        ${CAT_ICONS[cat]||''}
+        <span class="ag-lbl">${label}</span>
+        <span class="ag-ct">${list.length} alarma${list.length!==1?'s':''}</span>
+        <span class="ag-chev">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6,9 12,15 18,9"/></svg>
+        </span>
+      </div>
+      <div class="ag-body">
+        ${list.length?list.map(a=>`
+          <div class="ai">
+            <div class="ai-time">${a.time}</div>
+            <div class="ai-meta">
+              <div class="ai-name">${a.name}</div>
+              <div class="ai-sub">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                ${a.days}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19 11,5"/></svg>
+                ${a.sound!=='none'?a.sound:'sin sonido'}
+              </div>
+              ${a.spotify?`<div class="ai-sp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36a.625.625 0 0 1-.86.19c-2.36-1.44-5.33-1.77-8.83-.97a.624.624 0 1 1-.28-1.22c3.83-.88 7.1-.5 9.77 1.14a.626.626 0 0 1 .2.86zm1.23-2.74a.78.78 0 0 1-1.07.25c-2.7-1.66-6.81-2.14-9.99-1.17a.781.781 0 0 1-.46-1.49c3.64-1.11 8.16-.57 11.27 1.34a.78.78 0 0 1 .25 1.07zm.11-2.85c-3.23-1.92-8.56-2.09-11.64-1.16a.938.938 0 0 1-.55-1.79c3.54-1.08 9.43-.87 13.14 1.34a.938.938 0 0 1-.95 1.61z"/></svg>Spotify</div>`:''}
+            </div>
+            <div class="tog${a.on?' on':''}" onclick="togA(${a._i})"></div>
+            <button class="xbtn" onclick="delA(${a._i})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg>
+            </button>
+          </div>`)
+        .join(''):'<div style="padding:8px 4px;font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Sin alarmas aquí</div>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togGrp(el){
+  const body=el.nextElementSibling;
+  const chev=el.querySelector('.ag-chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(180deg)':'';
+}
+function togA(i){const a=gA();a[i].on=!a[i].on;sA(a);renderAlarms();}
+function delA(i){if(!confirm('¿Eliminar esta alarma?'))return;const a=gA();a.splice(i,1);sA(a);renderAlarms();}
+
+/* ===== SOUNDS ===== */
+function playSound(type){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    if(type==='beep'){o.type='square';o.frequency.value=780;g.gain.setValueAtTime(0.22,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.45);o.start();o.stop(ctx.currentTime+0.45);}
+    else if(type==='chime'){o.type='sine';o.frequency.value=528;g.gain.setValueAtTime(0.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.4);o.start();o.stop(ctx.currentTime+1.4);}
+    else if(type==='pulse'){o.type='sawtooth';o.frequency.setValueAtTime(420,ctx.currentTime);o.frequency.setValueAtTime(640,ctx.currentTime+0.18);g.gain.setValueAtTime(0.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.7);o.start();o.stop(ctx.currentTime+0.7);}
+  }catch(e){}
+}
+
+/* ===== ALARM CHECKER (every 15s) ===== */
+setInterval(()=>{
+  const n=new Date();
+  if(n.getSeconds()>8)return;
+  const hhmm=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  const dateStr=dStr(n);
+
+  // Check alarms
+  gA().forEach(a=>{if(a.on&&a.time===hhmm){showNotif(a);}});
+
+  // Check events for today (remind 10 min before)
+  gEv().forEach(ev=>{
+    if(!ev.time||!ev._ds)return;
+    const[eh,em]=ev.time.split(':').map(Number);
+    const evDate=new Date(ev._ds+'T'+ev.time);
+    const diffMin=(evDate-n)/60000;
+    if(diffMin>0&&diffMin<=10&&ev._ds===dateStr){
+      showEventNotif(ev,Math.round(diffMin));
+    }
+  });
+},15000);
+
+function showNotif(a){
+  const area=document.getElementById('notifArea');
+  const box=document.createElement('div');
+  box.className='notif-box';
+  box.innerHTML=`
+    <div class="notif-ttl">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      ${a.name}
+    </div>
+    <div class="notif-bdy">${a.days}${a.spotify?' &mdash; Spotify vinculado':''}</div>
+    <div class="notif-time-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      ${a.time}
+    </div>
+    <div class="notif-acts">
+      <button class="btn btn-xs" onclick="this.closest('.notif-box').remove()">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Descartar
+      </button>
+      ${a.spotify?`<button class="btn btn-g btn-xs" onclick="window.open('${a.spotify}','_blank')">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+        Abrir Spotify
+      </button>`:''}
+    </div>`;
+  area.prepend(box);
+  if(a.sound&&a.sound!=='none')playSound(a.sound);
+  sendPushNotif(a.name,`Alarma a las ${a.time} – ${a.days}`);
+  setTimeout(()=>box.remove&&box.remove(),14000);
+}
+
+function showEventNotif(ev,minsLeft){
+  const area=document.getElementById('notifArea');
+  const existing=area.querySelector(`[data-evid="${ev.id}"]`);
+  if(existing)return;
+  const box=document.createElement('div');
+  box.className='notif-box';
+  box.dataset.evid=ev.id;
+  box.style.borderColor='var(--gr)';
+  box.innerHTML=`
+    <div class="notif-ttl" style="color:var(--gr2);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      ${ev.title}
+    </div>
+    <div class="notif-bdy">${ev.desc||'Evento programado'}</div>
+    <div class="notif-time-badge" style="border-color:rgba(42,140,110,0.4);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      ${ev.time} — en ${minsLeft} min
+    </div>
+    <div class="notif-acts">
+      <button class="btn btn-xs" onclick="this.closest('.notif-box').remove()">Cerrar</button>
+    </div>`;
+  area.prepend(box);
+  sendPushNotif(ev.title,`En ${minsLeft} minutos a las ${ev.time}${ev.desc?' – '+ev.desc:''}`);
+  setTimeout(()=>box.remove&&box.remove(),20000);
+}
+
+/* ===== CALENDAR ===== */
+function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function chMon(d){calDate.setMonth(calDate.getMonth()+d);renderCal();}
+
+function renderCal(){
+  document.getElementById('calLbl').textContent=MONTHS[calDate.getMonth()]+' '+calDate.getFullYear();
+  const g=document.getElementById('cgrid');
+  g.innerHTML=DOWS.map(d=>`<div class="dow">${d}</div>`).join('');
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  let dow=new Date(y,m,1).getDay();dow=dow===0?6:dow-1;
+  const dim=new Date(y,m+1,0).getDate();
+  const today=new Date();
+  const evs=gEv();
+
+  for(let i=0;i<dow;i++){
+    g.innerHTML+=`<div class="cday dim"><div class="dnum">${new Date(y,m,1-(dow-i)).getDate()}</div></div>`;
+  }
+  for(let d=1;d<=dim;d++){
+    const date=new Date(y,m,d);
+    const ds=dStr(date);
+    const isToday=date.toDateString()===today.toDateString();
+    const isSel=selDay===ds;
+    const dd=gD(ds);
+    const posts=dd.postits||[];
+    const dayEvs=evs.filter(e=>e._ds===ds);
+
+    const dots=posts.slice(0,4).map(p=>`<div class="ddot" style="background:${p.color};"></div>`).join('');
+    const chips=dayEvs.slice(0,2).map(e=>`<span class="dchip b-${e.cat}">${e.time?e.time.substring(0,5)+' ':''}${e.title.substring(0,9)}</span>`).join('');
+
+    g.innerHTML+=`<div class="cday${isToday?' today':''}${isSel?' sel':''}" onclick="openDay('${ds}','${d} de ${MONTHS[m]}')">
+      <div class="dnum">${d}</div>
+      <div class="day-dots">${dots}</div>
+      ${chips}
+    </div>`;
+  }
+  const rem=(7-(dow+dim)%7)%7;
+  for(let i=1;i<=rem;i++){
+    g.innerHTML+=`<div class="cday dim"><div class="dnum">${new Date(y,m+1,i).getDate()}</div></div>`;
+  }
+}
+
+function openDay(ds,label){
+  selDay=ds;
+  const panel=document.getElementById('dayPanel');
+  panel.style.display='block';
+  const dd=gD(ds);
+  const dayEvs=gEv().filter(e=>e._ds===ds).sort((a,b)=>a.time<b.time?-1:1);
+
+  let evSection='';
+  if(dayEvs.length){
+    evSection=`<div style="margin-bottom:14px;">
+      <div class="lbl" style="display:flex;align-items:center;gap:5px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--gr2)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Citas y eventos
+      </div>
+      ${dayEvs.map(e=>`<div class="day-ev-row">
+        <span class="day-ev-time">${e.time||'--:--'}</span>
+        <span class="day-ev-title">${e.title}</span>
+        <span class="badge b-${e.cat}">${e.cat}</span>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  let hrRows='';
+  for(let h=6;h<=23;h++){
+    const lbl=h.toString().padStart(2,'0')+':00';
+    const val=(dd.hours||{})[lbl]||'';
+    hrRows+=`<div class="hr-row">
+      <div class="hr-lbl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        ${lbl}
+      </div>
+      <input class="hr-inp" value="${val.replace(/"/g,'&quot;')}" placeholder="..." onchange="saveHour('${ds}','${lbl}',this.value)" />
+    </div>`;
+  }
+
+  const cpicker=PCOLS.map(c=>`<div class="cdot${c===selPCol?' sel':''}" style="background:${c};" onclick="sPCol('${c}','${ds}','${label}')"></div>`).join('');
+  const postits=(dd.postits||[]).map(p=>`<div class="postit" style="background:${p.color}1a;border:1px solid ${p.color}44;color:${p.color};">
+    <button class="postit-x" onclick="delPostit('${ds}',${p.id},'${label}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>${p.text}
+  </div>`).join('')||`<span style="font-size:11px;color:var(--tx3);">Sin post-its aún</span>`;
+
+  panel.innerHTML=`<div class="day-panel">
+    <div class="dp-head">
+      <div class="dp-ttl">
+        <svg width="14" height="14" style="margin-right:5px;vertical-align:middle;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        ${label}
+      </div>
+      <button class="btn btn-xs" onclick="closeDay()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cerrar
+      </button>
+    </div>
+    ${evSection}
+    <div class="lbl" style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      Horario
+    </div>
+    ${hrRows}
+    <div style="margin-top:16px;">
+      <div class="lbl" style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        Post-its
+      </div>
+      <div class="postit-row">
+        <input type="text" id="piTxt" placeholder="Nota rápida..." style="flex:1;min-width:100px;" />
+        <div style="display:flex;gap:5px;">${cpicker}</div>
+        <button class="btn btn-g btn-xs" onclick="addPostit('${ds}','${label}')">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Post-it
+        </button>
+      </div>
+      <div class="postit-grid">${postits}</div>
+    </div>
+  </div>`;
+  renderCal();
+}
+
+function closeDay(){selDay=null;document.getElementById('dayPanel').style.display='none';renderCal();}
+function saveHour(ds,lbl,val){const d=gD(ds);if(!d.hours)d.hours={};d.hours[lbl]=val;sD(ds,d);}
+function sPCol(c,ds,label){selPCol=c;openDay(ds,label);}
+function addPostit(ds,label){
+  const txt=document.getElementById('piTxt').value.trim();
+  if(!txt)return;
+  const d=gD(ds);if(!d.postits)d.postits=[];
+  d.postits.push({id:Date.now(),text:txt,color:selPCol});
+  sD(ds,d);openDay(ds,label);
+}
+function delPostit(ds,id,label){
+  const d=gD(ds);d.postits=(d.postits||[]).filter(p=>p.id!==id);sD(ds,d);openDay(ds,label);
+}
+
+/* ===== AGENDA ===== */
+let addEvOpen=false;
+function toggleAddEvent(){
+  addEvOpen=!addEvOpen;
+  document.getElementById('addEvPanel').className='add-ev-panel'+(addEvOpen?' open':'');
+  if(addEvOpen){
+    // set today as default date
+    const today=new Date();
+    document.getElementById('evDate').value=today.toISOString().split('T')[0];
+    updateEvTime();
+  }
+}
+
+function addEvent(){
+  const dateVal=document.getElementById('evDate').value;
+  const title=document.getElementById('evTitle').value.trim();
+  if(!dateVal||!title){alert('Completa fecha y título');return;}
+  const time=document.getElementById('evTime').value||'00:00';
+  const ds=dateVal; // already YYYY-MM-DD from date input
+  const evs=gEv();
+  evs.push({
+    id:Date.now(),
+    date:dateVal,
+    time,
+    title,
+    desc:document.getElementById('evDesc').value.trim(),
+    cat:document.getElementById('evCat').value,
+    _ds:ds
+  });
+  evs.sort((a,b)=>a._ds<b._ds?-1:1);
+  sEv(evs);
+  document.getElementById('evDate').value='';
+  document.getElementById('evTitle').value='';
+  document.getElementById('evDesc').value='';
+  document.getElementById('evTime').value='';
+  document.getElementById('evTimeDisplay').value='';
+  toggleAddEvent();
+  renderAgenda();
+  renderCal();
+  if(selDay&&selDay===ds)openDay(ds,'');
+  sendPushNotif('Evento guardado',`${title} el ${dateVal} a las ${time}`);
+}
+
+function delEv(id){
+  if(!confirm('¿Eliminar este evento?'))return;
+  sEv(gEv().filter(e=>e.id!==id));
+  renderAgenda();
+  renderCal();
+}
+
+/* Format YYYY-MM-DD to human readable */
+function fmtDate(ds){
+  if(!ds)return ds;
+  const parts=ds.split('-');
+  if(parts.length!==3)return ds;
+  const d=parseInt(parts[2]);
+  const m=parseInt(parts[1])-1;
+  const y=parseInt(parts[0]);
+  return `${d} de ${MONTHS[m]} ${y}`;
+}
+
+function renderAgenda(){
+  const evs=gEv();
+  const el=document.getElementById('agList');
+  if(!evs.length){
+    el.innerHTML=`<div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      No hay eventos agendados aún
+    </div>`;
+    return;
+  }
+
+  // Group by _ds (YYYY-MM-DD)
+  const byDate={};
+  evs.forEach(e=>{
+    const key=e._ds||e.date;
+    if(!byDate[key])byDate[key]=[];
+    byDate[key].push(e);
+  });
+
+  // Sort each day's events by time
+  Object.values(byDate).forEach(list=>list.sort((a,b)=>a.time<b.time?-1:1));
+
+  el.innerHTML=Object.entries(byDate)
+    .sort((a,b)=>a[0]<b[0]?-1:1)
+    .map(([date,list])=>`
+    <div class="ag-day-block">
+      <div class="ag-day-head" onclick="togDayBlock(this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--pu2)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+        <div class="ag-day-date">${fmtDate(date)}</div>
+        <div class="ag-day-count">${list.length} actividad${list.length!==1?'es':''}</div>
+        <div class="ag-day-chev">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+        </div>
+      </div>
+      <div class="ag-day-body">
+        ${list.map(e=>`<div class="ev-card">
+          <div class="ev-time">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:block;margin-bottom:3px;"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+            ${e.time||'--:--'}
+          </div>
+          <div class="ev-info">
+            <div class="ev-ttl">${e.title}</div>
+            ${e.desc?`<div class="ev-dsc">${e.desc}</div>`:''}
+            <div style="margin-top:6px;"><span class="badge b-${e.cat}">${e.cat}</span></div>
+          </div>
+          <button class="xbtn" onclick="delEv(${e.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg>
+          </button>
+        </div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function togDayBlock(hdr){
+  const body=hdr.nextElementSibling;
+  const chev=hdr.querySelector('.ag-day-chev');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(180deg)':'';
+}
+
+/* ===== INIT ===== */
+renderAlarms();
+renderCal();
+renderAgenda();
+</script>
+</body>
+</html>
