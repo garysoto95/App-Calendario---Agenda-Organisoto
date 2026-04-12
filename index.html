@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>OrganiSoto — Gestor de alarmas, calendario, agenda y proyectos</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+/* ===== RESET Y VARIABLES ===== */
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Outfit',system-ui,sans-serif;}
 :root{
   --bg:#0c0b14;--bg2:#110f20;--bg3:#17152b;--card:#1c192e;--card2:#201d35;
@@ -15,7 +15,7 @@
   --bd:rgba(108,99,184,0.18);--bd2:rgba(108,99,184,0.32);
   --blur:blur(14px);
 }
-body{background:var(--bg);color:var(--tx);min-height:100vh;}
+body{background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;}
 .app{max-width:1080px;margin:0 auto;padding-bottom:40px;}
 
 /* ===== HEADER ===== */
@@ -24,7 +24,7 @@ body{background:var(--bg);color:var(--tx);min-height:100vh;}
   backdrop-filter:var(--blur);
   -webkit-backdrop-filter:var(--blur);
   border-bottom:1px solid var(--bd);
-  padding:11px 18px;
+  padding:12px 18px;
   display:flex;
   align-items:center;
   position:sticky;top:0;z-index:100;
@@ -33,31 +33,11 @@ body{background:var(--bg);color:var(--tx);min-height:100vh;}
   position:absolute;left:50%;transform:translateX(-50%);
   display:flex;align-items:center;gap:8px;
 }
-.logo-icon{
-  width:28px;height:28px;
-  animation: logoSpin 6s linear infinite, logoColorCycle 4s ease-in-out infinite;
-}
-@keyframes logoSpin{
-  0%{transform:rotate(0deg);}
-  100%{transform:rotate(360deg);}
-}
-@keyframes logoColorCycle{
-  0%{filter:hue-rotate(0deg) brightness(1);}
-  25%{filter:hue-rotate(60deg) brightness(1.2);}
-  50%{filter:hue-rotate(120deg) brightness(1);}
-  75%{filter:hue-rotate(200deg) brightness(1.2);}
-  100%{filter:hue-rotate(360deg) brightness(1);}
-}
-.logo{font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-  background:linear-gradient(90deg,var(--pu2),var(--gr2),var(--pu2));
-  background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:logoTextShimmer 3s linear infinite;
-}
-@keyframes logoTextShimmer{
-  0%{background-position:0%}100%{background-position:200%}
-}
-.logo em{font-style:normal;}
+.logo-icon{width:28px;height:28px;animation:logoSpin 6s linear infinite, logoColorCycle 4s ease-in-out infinite;}
+@keyframes logoSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+@keyframes logoColorCycle{0%{filter:hue-rotate(0deg) brightness(1);}25%{filter:hue-rotate(60deg) brightness(1.2);}50%{filter:hue-rotate(120deg) brightness(1);}75%{filter:hue-rotate(200deg) brightness(1.2);}100%{filter:hue-rotate(360deg) brightness(1);}}
+.logo{font-size:clamp(14px,5vw,18px);font-weight:700;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(90deg,var(--pu2),var(--gr2),var(--pu2));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:logoTextShimmer 3s linear infinite;}
+@keyframes logoTextShimmer{0%{background-position:0%}100%{background-position:200%}}
 .clk{font-size:12px;color:var(--tx3);margin-left:auto;letter-spacing:1px;font-variant-numeric:tabular-nums;}
 
 /* ===== TABS ===== */
@@ -67,10 +47,13 @@ body{background:var(--bg);color:var(--tx);min-height:100vh;}
   backdrop-filter:var(--blur);
   -webkit-backdrop-filter:var(--blur);
   border-bottom:1px solid var(--bd);
+  overflow-x:auto;
+  white-space:nowrap;
+  -webkit-overflow-scrolling:touch;
 }
-.tab{flex:1;padding:12px 6px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
-.tab svg{width:14px;height:14px;flex-shrink:0;}
-.tab:hover{color:var(--pu2);}
+.tab{flex:1;padding:14px 8px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:70px;}
+.tab svg{width:16px;height:16px;}
+.tab:active{color:var(--pu2);}
 .tab.on{color:var(--pu2);border-bottom-color:var(--pu);}
 
 .sec{display:none;padding:16px;}
@@ -81,392 +64,201 @@ body{background:var(--bg);color:var(--tx);min-height:100vh;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 .row1{margin-bottom:10px;}
 
-input[type=text],input[type=url],input[type=date],select,textarea{
-  width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:8px;
-  color:var(--tx);padding:8px 12px;font-size:13px;outline:none;transition:border-color .2s;
+input,select,textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:10px;
+  color:var(--tx);padding:12px;font-size:14px;outline:none;transition:border-color .2s;
   font-family:'Outfit',sans-serif;
 }
 input:focus,select:focus,textarea:focus{border-color:var(--pu);box-shadow:0 0 0 2px rgba(108,99,184,0.12);}
-input[type=date]{
-  color-scheme: dark;
-  background: var(--bg3);
-  border: 1px solid var(--bd);
-  border-radius: 8px;
-  color: var(--tx);
-  padding: 8px 12px;
-}
-input[type=date]::-webkit-calendar-picker-indicator{
-  filter: invert(0.7);
-  cursor: pointer;
-}
+input[type=date]{color-scheme:dark;background:var(--bg3);border:1px solid var(--bd);border-radius:10px;color:var(--tx);padding:12px;}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.7);cursor:pointer;}
 select option{background:var(--bg2);}
 
-.btn{padding:8px 16px;border-radius:8px;border:1px solid var(--pu3);background:rgba(108,99,184,0.12);color:var(--pu2);font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s;display:inline-flex;align-items:center;gap:5px;font-family:'Outfit',sans-serif;}
-.btn:hover{background:rgba(108,99,184,0.28);transform:translateY(-1px);}
+.btn{padding:12px 18px;border-radius:12px;border:1px solid var(--pu3);background:rgba(108,99,184,0.12);color:var(--pu2);font-size:12px;cursor:pointer;letter-spacing:1px;transition:all .2s;display:inline-flex;align-items:center;gap:5px;font-family:'Outfit',sans-serif;min-height:44px;}
+.btn:active{background:rgba(108,99,184,0.28);transform:scale(0.98);}
 .btn-g{border-color:var(--gr3);background:rgba(42,140,110,0.12);color:var(--gr2);}
-.btn-g:hover{background:rgba(42,140,110,0.28);}
-.btn-xs{padding:10px 14px;font-size:11px;}
+.btn-g:active{background:rgba(42,140,110,0.28);}
+.btn-xs{padding:10px 16px;font-size:12px;min-height:40px;}
 .btn-red{border-color:#5a2030;background:rgba(180,40,60,0.1);color:#c0405a;}
 
 /* ADD ALARM BTN */
-.add-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px 16px;border:1px dashed var(--bd2);border-radius:10px;color:var(--tx3);font-size:12px;letter-spacing:1px;transition:all .25s;margin-bottom:14px;background:transparent;}
-.add-row:hover{border-color:var(--pu);color:var(--pu2);background:rgba(108,99,184,0.06);}
-.add-row svg{width:20px;height:20px;flex-shrink:0;}
+.add-row{display:flex;align-items:center;gap:10px;cursor:pointer;padding:14px 16px;border:1px dashed var(--bd2);border-radius:12px;color:var(--tx3);font-size:13px;letter-spacing:1px;transition:all .25s;margin-bottom:14px;background:transparent;min-height:54px;}
+.add-row:active{border-color:var(--pu);color:var(--pu2);background:rgba(108,99,184,0.06);}
+.add-row svg{width:22px;height:22px;}
 
 /* ALARM CARDS GRID */
-.alarm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:4px;}
-.alarm-card{border-radius:14px;padding:14px 14px 12px;position:relative;display:flex;flex-direction:column;gap:6px;transition:transform .18s,box-shadow .18s;cursor:default;border:1px solid transparent;}
-.alarm-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.35);}
-.alarm-card-time{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-1px;line-height:1;}
-.alarm-card-name{font-size:11px;opacity:.85;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.alarm-card-actions{display:flex;align-items:center;gap:6px;margin-top:4px;}
-.tog{width:34px;height:19px;background:rgba(0,0,0,0.25);border-radius:10px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.alarm-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:4px;}
+@media (min-width: 500px){.alarm-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}}
+.alarm-card{border-radius:16px;padding:16px;position:relative;display:flex;flex-direction:column;gap:8px;transition:transform .18s,box-shadow .18s;cursor:default;border:1px solid transparent;}
+.alarm-card:active{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.35);}
+.alarm-card-time{font-size:clamp(24px,8vw,32px);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-1px;line-height:1;}
+.alarm-card-name{font-size:13px;opacity:.9;}
+.alarm-card-actions{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.tog{width:44px;height:24px;background:rgba(0,0,0,0.25);border-radius:20px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
 .tog.on{background:rgba(255,255,255,0.28);}
-.tog::after{content:'';position:absolute;width:13px;height:13px;background:rgba(255,255,255,0.5);border-radius:50%;top:2px;left:2px;transition:left .2s;}
-.tog.on::after{left:17px;background:#fff;}
-.xbtn{background:rgba(0,0,0,0.2);border:none;color:rgba(255,255,255,0.6);cursor:pointer;font-size:12px;padding:6px 8px;border-radius:6px;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;}
-.xbtn:hover{background:rgba(180,40,60,0.45);color:#fff;}
-.xbtn svg{width:14px;height:14px;}
-.alarm-col-btn{background:none;border:none;cursor:pointer;padding:0;display:flex;gap:3px;margin-left:auto;}
-.alarm-col-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,0.3);transition:transform .15s;}
-.alarm-col-dot:hover{transform:scale(1.3);}
-.alarm-col-popup{display:none;position:absolute;bottom:calc(100% + 6px);right:0;background:rgba(17,15,32,0.96);backdrop-filter:blur(14px);border:1px solid var(--bd2);border-radius:10px;padding:8px 10px;z-index:300;box-shadow:0 6px 24px rgba(0,0,0,0.5);}
-.alarm-col-popup.open{display:flex;gap:6px;flex-wrap:wrap;width:120px;}
-.alarm-col-swatch{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;}
-.alarm-col-swatch:hover{transform:scale(1.2);}
-.alarm-col-swatch.sel{border-color:#fff;transform:scale(1.15);}
+.tog::after{content:'';position:absolute;width:18px;height:18px;background:rgba(255,255,255,0.7);border-radius:50%;top:2px;left:2px;transition:left .2s;}
+.tog.on::after{left:22px;background:#fff;}
+.xbtn{background:rgba(0,0,0,0.2);border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:14px;padding:8px 10px;border-radius:10px;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;}
+.xbtn:active{background:rgba(180,40,60,0.45);color:#fff;}
+.xbtn svg{width:18px;height:18px;}
+.alarm-col-btn{background:none;border:none;cursor:pointer;padding:0;display:flex;gap:4px;}
+.alarm-col-dot{width:12px;height:12px;border-radius:50%;border:1px solid rgba(255,255,255,0.3);transition:transform .15s;}
+.alarm-col-popup{display:none;position:absolute;bottom:calc(100% + 8px);right:0;background:rgba(17,15,32,0.96);backdrop-filter:blur(14px);border:1px solid var(--bd2);border-radius:12px;padding:10px;z-index:300;width:140px;flex-wrap:wrap;gap:8px;}
+.alarm-col-popup.open{display:flex;}
+.alarm-col-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;}
+.alarm-col-swatch:active{transform:scale(1.2);}
 .alarm-edit-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
 .alarm-edit-overlay.open{display:flex;}
-.alarm-edit-box{background:rgba(22,20,38,0.98);border:1px solid var(--bd2);border-radius:16px;padding:20px;width:300px;max-width:92vw;box-shadow:0 12px 48px rgba(0,0,0,0.6);animation:drumIn .2s ease-out;}
+.alarm-edit-box{background:rgba(22,20,38,0.98);border:1px solid var(--bd2);border-radius:20px;padding:20px;width:92%;max-width:360px;box-shadow:0 12px 48px rgba(0,0,0,0.6);animation:drumIn .2s ease-out;}
 
 /* DRUM TIME PICKER */
 .drum-wrap{
   background:rgba(28,25,46,0.8);
   backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
   border:1px solid var(--bd2);
-  border-radius:16px;
+  border-radius:20px;
   padding:20px;
   margin-bottom:14px;
   display:none;
-  box-shadow:0 8px 40px rgba(0,0,0,0.4);
 }
 .drum-wrap.open{display:block;animation:drumIn .25s ease-out;}
 @keyframes drumIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
-.drum-pickers{display:flex;justify-content:center;align-items:center;gap:6px;margin-bottom:18px;}
-.drum-sep{font-size:30px;color:var(--pu2);font-weight:300;padding:0 6px;animation:sepPulse 2s ease-in-out infinite;}
-@keyframes sepPulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-.drum-vp{height:130px;overflow:hidden;position:relative;width:80px;cursor:ns-resize;touch-action:none;}
-.drum-hl{
-  position:absolute;top:45px;left:0;right:0;height:42px;
-  border-top:1px solid rgba(108,99,184,0.35);
-  border-bottom:1px solid rgba(108,99,184,0.35);
-  background:rgba(108,99,184,0.07);
-  pointer-events:none;
-  border-radius:6px;
-}
+.drum-pickers{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:18px;}
+.drum-sep{font-size:32px;color:var(--pu2);font-weight:300;padding:0 8px;}
+.drum-vp{height:140px;overflow:hidden;position:relative;width:100px;cursor:ns-resize;touch-action:none;}
+@media (max-width: 480px){.drum-vp{width:80px;}}
+.drum-hl{position:absolute;top:48px;left:0;right:0;height:44px;border-top:1px solid rgba(108,99,184,0.35);border-bottom:1px solid rgba(108,99,184,0.35);background:rgba(108,99,184,0.07);pointer-events:none;border-radius:8px;}
 .drum-track{display:flex;flex-direction:column;user-select:none;}
-.drum-item{height:42px;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--tx3);flex-shrink:0;font-variant-numeric:tabular-nums;transition:all .12s;}
-.drum-item.sel{color:var(--pu2);font-size:32px;font-weight:600;text-shadow:0 0 20px rgba(108,99,184,0.5);}
-.sound-selector{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:5px;}
-.sound-selector select{flex:1;background:var(--bg3);border:1px solid var(--bd);border-radius:8px;color:var(--tx);padding:8px;font-size:12px;}
-.sound-custom-file{display:none;margin-top:6px;}
-.sound-custom-file.open{display:block;}
-.drum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.drum-item{height:44px;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,6vw,28px);color:var(--tx3);flex-shrink:0;transition:all .12s;}
+.drum-item.sel{color:var(--pu2);font-size:clamp(28px,7vw,34px);font-weight:600;text-shadow:0 0 20px rgba(108,99,184,0.5);}
+.drum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
 
 /* CALENDARIO */
-.cal-nav-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.cal-nbtn{background:transparent;border:1px solid var(--bd);color:var(--pu2);border-radius:10px;padding:10px 16px;cursor:pointer;font-size:13px;transition:all .2s;display:flex;align-items:center;gap:4px;}
-.cal-nbtn:hover{background:rgba(108,99,184,0.12);border-color:var(--pu);}
-.cal-month{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:2px;text-transform:uppercase;flex:1;text-align:center;}
-.cgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;}
-.dow{text-align:center;font-size:9px;letter-spacing:2px;color:var(--tx3);text-transform:uppercase;padding:8px 0;}
-.cday{min-height:80px;background:rgba(28,25,46,0.6);border:1px solid rgba(108,99,184,0.1);border-radius:8px;padding:8px 6px;cursor:pointer;transition:all .2s;overflow:hidden;backdrop-filter:blur(4px);}
-.cday:hover{border-color:var(--pu);background:rgba(108,99,184,0.08);transform:translateY(-1px);}
+.cal-nav-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.cal-nbtn{background:transparent;border:1px solid var(--bd);color:var(--pu2);border-radius:12px;padding:12px 18px;cursor:pointer;font-size:14px;transition:all .2s;min-width:48px;min-height:44px;}
+.cal-nbtn:active{background:rgba(108,99,184,0.12);border-color:var(--pu);}
+.cal-month{font-size:clamp(14px,5vw,18px);font-weight:600;color:var(--tx);letter-spacing:2px;text-transform:uppercase;flex:1;text-align:center;}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+@media (max-width: 600px){.cgrid{grid-template-columns:repeat(4,1fr);}}
+.dow{text-align:center;font-size:10px;letter-spacing:1px;color:var(--tx3);text-transform:uppercase;padding:10px 0;}
+.cday{background:rgba(28,25,46,0.6);border:1px solid rgba(108,99,184,0.1);border-radius:12px;padding:10px 6px;cursor:pointer;transition:all .2s;min-height:85px;display:flex;flex-direction:column;}
+.cday:active{border-color:var(--pu);background:rgba(108,99,184,0.08);transform:translateY(-1px);}
 .cday.today{border-color:var(--gr);}
 .cday.dim{opacity:0.2;pointer-events:none;}
 .cday.sel{border-color:var(--pu);background:rgba(108,99,184,0.12);}
 .day-header{display:flex;justify-content:space-between;align-items:center;}
-.dnum{font-size:12px;color:var(--tx3);font-weight:500;}
+.dnum{font-size:clamp(12px,4vw,14px);color:var(--tx3);font-weight:500;}
 .cday.today .dnum{color:var(--gr2);font-weight:700;}
-.day-dots{display:flex;gap:3px;flex-wrap:wrap;margin-left:4px;}
-.ddot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  flex-shrink:0;
-  box-shadow:0 0 3px currentColor;
-  filter:brightness(1.2);
-}
-.event-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
-  max-height: 48px;
-  overflow-y: auto;
-}
-.dchip {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(108,99,184,0.2);
-  border-radius: 16px;
-  padding: 2px 8px;
-  font-size: 9px;
-  font-weight: 500;
-  color: var(--pu2);
-  white-space: nowrap;
-  border: 1px solid rgba(108,99,184,0.3);
-  width: auto;
-}
-.dchip.b-trabajo { background: rgba(108,99,184,0.25); color: var(--pu2); }
-.dchip.b-proyecto { background: rgba(186,117,23,0.25); color: #d4a04a; }
-.dchip.b-personal { background: rgba(42,140,110,0.25); color: var(--gr2); }
-.dchip.b-cita { background: rgba(180,80,140,0.25); color: #cc88bb; }
+.day-dots{display:flex;gap:4px;flex-wrap:wrap;margin-left:4px;}
+.ddot{width:12px;height:12px;border-radius:50%;flex-shrink:0;box-shadow:0 0 3px currentColor;}
+.event-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;max-height:60px;overflow-y:auto;}
+.dchip{display:inline-flex;align-items:center;background:rgba(108,99,184,0.2);border-radius:20px;padding:4px 8px;font-size:10px;font-weight:500;color:var(--pu2);white-space:nowrap;border:1px solid rgba(108,99,184,0.3);}
+.dchip.b-trabajo{background:rgba(108,99,184,0.25);}
+.dchip.b-proyecto{background:rgba(186,117,23,0.25);color:#d4a04a;}
+.dchip.b-personal{background:rgba(42,140,110,0.25);color:var(--gr2);}
+.dchip.b-cita{background:rgba(180,80,140,0.25);color:#cc88bb;}
 
 /* DAY PANEL */
 .day-panel{
   background:rgba(17,15,32,0.78);
   backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
   border:1px solid var(--bd2);
-  border-radius:14px;
+  border-radius:20px;
   padding:18px;
   margin-top:14px;
-  max-height:70vh;
+  max-height:75vh;
   overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
   animation:panelIn .2s ease-out;
 }
 @keyframes panelIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 .dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
-.dp-ttl{font-size:15px;color:var(--pu2);letter-spacing:1px;font-weight:600;}
-.dp-buttons{display:flex;gap:8px;}
-.postit-section {
-  margin-bottom: 20px;
+.dp-ttl{font-size:clamp(14px,5vw,18px);color:var(--pu2);font-weight:600;}
+.dp-buttons{display:flex;gap:10px;}
+.postit-section{margin-bottom:20px;}
+.hr-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(108,99,184,0.06);flex-wrap:wrap;}
+@media (max-width: 500px){
+  .hr-row{flex-direction:column;align-items:stretch;}
+  .hr-lbl,.hr-minutes-label{align-self:flex-start;}
 }
-.hr-row{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(108,99,184,0.06);flex-wrap:wrap;}
-.hr-lbl{
-  font-size:11px;
-  color:var(--tx3);
-  min-width:44px;
-  display:inline-flex;
-  align-items:center;
-  gap:3px;
-  transition:all 0.1s;
-  background:transparent;
-  border:none;
-  font-family:'Outfit',sans-serif;
-  padding:4px 6px;
-  border-radius:20px;
-}
-.hr-lbl.clickable{
-  cursor:pointer;
-}
+.hr-lbl{font-size:clamp(11px,4vw,13px);color:var(--tx3);min-width:55px;display:inline-flex;align-items:center;gap:4px;background:transparent;border:none;padding:6px 10px;border-radius:30px;transition:all 0.1s;}
+.hr-lbl.clickable{cursor:pointer;}
 .hr-lbl.highlight{color:var(--gr2);text-shadow:0 0 3px var(--gr);font-weight:600;background:rgba(74,184,151,0.1);}
-.hr-minutes-label{
-  font-size:10px;
-  color:#f5c542;
-  margin-left:2px;
-  cursor:pointer;
-  background:rgba(245,197,66,0.1);
-  padding:2px 6px;
-  border-radius:16px;
-  white-space:nowrap;
-}
-.hr-inp{
-  flex:1;
-  background:transparent;
-  border:none;
-  border-bottom:1px solid rgba(108,99,184,0.1);
-  color:var(--tx);
-  font-size:12px;
-  padding:6px 2px;
-  outline:none;
-  font-family:'Outfit',sans-serif;
-  transition:border-color .2s;
-}
+.hr-minutes-label{font-size:11px;color:#f5c542;margin-left:4px;cursor:pointer;background:rgba(245,197,66,0.1);padding:4px 8px;border-radius:20px;white-space:nowrap;}
+.hr-inp{flex:1;background:transparent;border:none;border-bottom:1px solid rgba(108,99,184,0.1);color:var(--tx);font-size:13px;padding:8px 4px;outline:none;}
 .hr-inp:focus{border-bottom-color:var(--pu);}
-.postit-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0;}
-.postit-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
-.postit{border-radius:8px;padding:8px 10px;min-width:92px;max-width:140px;min-height:66px;font-size:11px;position:relative;word-break:break-word;backdrop-filter:blur(6px);}
-.postit-x{position:absolute;top:4px;right:5px;cursor:pointer;background:none;border:none;color:inherit;opacity:.5;transition:opacity .15s;display:flex;align-items:center;}
-.postit-x:hover{opacity:1;}
-.postit-x svg{width:10px;height:10px;}
-.cdot{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  cursor:pointer;
-  border:2px solid transparent;
-  flex-shrink:0;
-  transition:transform .15s;
-  box-shadow:0 0 4px rgba(255,255,255,0.2);
-}
-.cdot:hover{transform:scale(1.2);}
+.postit-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0;}
+.postit-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.postit{border-radius:12px;padding:10px 12px;min-width:100px;max-width:160px;min-height:70px;font-size:12px;position:relative;word-break:break-word;backdrop-filter:blur(6px);}
+.postit-x{position:absolute;top:6px;right:6px;cursor:pointer;background:none;border:none;color:inherit;opacity:.6;padding:4px;}
+.postit-x svg{width:12px;height:12px;}
+.cdot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;transition:transform .15s;box-shadow:0 0 4px rgba(255,255,255,0.2);}
+.cdot:active{transform:scale(1.2);}
 .cdot.sel{border-color:#fff;transform:scale(1.15);}
 
 /* AGENDA */
-.ag-day-block{
-  background:rgba(28,25,46,0.55);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  border:1px solid var(--bd);
-  border-radius:12px;
-  margin-bottom:10px;
-  overflow:hidden;
-}
-.ag-day-block:hover{border-color:var(--bd2);}
-.ag-day-head{
-  display:flex;align-items:center;gap:10px;
-  padding:12px 16px;cursor:pointer;
-  background:rgba(32,29,53,0.5);
-  transition:background .2s;
-}
-.ag-day-head:hover{background:rgba(32,29,53,0.8);}
-.ag-day-date{font-size:13px;font-weight:600;color:var(--pu2);flex:1;}
-.ag-day-count{font-size:11px;color:var(--tx3);}
-.ag-day-chev{transition:transform .25s;display:flex;color:var(--tx3);}
-.ag-day-chev svg{width:14px;height:14px;}
-.ag-day-body{display:none;padding:8px 14px 12px;}
-.ag-day-body.open{display:block;animation:fadeIn .2s ease-out;}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.ev-card{background:rgba(28,25,46,0.5);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start;}
-.ev-time{font-size:11px;color:var(--gr2);min-width:44px;font-weight:600;font-variant-numeric:tabular-nums;}
+.ag-day-block{background:rgba(28,25,46,0.55);backdrop-filter:blur(10px);border:1px solid var(--bd);border-radius:16px;margin-bottom:12px;overflow:hidden;}
+.ag-day-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;background:rgba(32,29,53,0.5);transition:background .2s;}
+.ag-day-head:active{background:rgba(32,29,53,0.8);}
+.ag-day-date{font-size:14px;font-weight:600;color:var(--pu2);flex:1;}
+.ag-day-count{font-size:12px;color:var(--tx3);}
+.ag-day-chev{transition:transform .25s;display:flex;}
+.ag-day-chev svg{width:16px;height:16px;}
+.ag-day-body{display:none;padding:12px;}
+.ag-day-body.open{display:block;}
+.ev-card{background:rgba(28,25,46,0.5);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;}
+.ev-time{font-size:12px;color:var(--gr2);min-width:55px;font-weight:600;}
 .ev-info{flex:1;}
-.ev-ttl{font-size:13px;color:var(--tx);}
-.ev-dsc{font-size:11px;color:var(--tx3);margin-top:2px;}
-.badge{font-size:9px;padding:2px 7px;border-radius:8px;letter-spacing:.8px;text-transform:uppercase;}
+.ev-ttl{font-size:14px;color:var(--tx);}
+.ev-dsc{font-size:12px;color:var(--tx3);margin-top:4px;}
+.badge{font-size:10px;padding:4px 8px;border-radius:12px;text-transform:uppercase;}
 .b-trabajo{background:rgba(108,99,184,0.18);color:var(--pu2);}
 .b-proyecto{background:rgba(186,117,23,0.18);color:#d4a04a;}
 .b-personal{background:rgba(42,140,110,0.18);color:var(--gr2);}
 .b-cita{background:rgba(180,80,140,0.18);color:#cc88bb;}
-.sec-lbl{font-size:10px;letter-spacing:2px;color:var(--gr2);text-transform:uppercase;margin-bottom:8px;padding-left:10px;border-left:2px solid var(--gr);margin-top:16px;}
-.empty{text-align:center;padding:36px;color:var(--tx3);font-size:12px;}
-.empty svg{width:36px;height:36px;opacity:.3;margin:0 auto 10px;display:block;}
+.empty{text-align:center;padding:40px;color:var(--tx3);font-size:13px;}
+.empty svg{width:40px;height:40px;opacity:.3;margin:0 auto 12px;display:block;}
 
-.add-ev-panel{
-  background:rgba(17,15,32,0.8);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  border:1px solid var(--bd2);
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:16px;
-  display:none;
-}
-.add-ev-panel.open{display:block;animation:drumIn .25s ease-out;}
-.add-ev-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px 16px;border:1px dashed var(--bd2);border-radius:10px;color:var(--tx3);font-size:12px;letter-spacing:1px;transition:all .25s;margin-bottom:14px;background:transparent;}
-.add-ev-toggle:hover{border-color:var(--pu);color:var(--pu2);background:rgba(108,99,184,0.06);}
-.add-ev-toggle svg{width:20px;height:20px;}
+/* ADD EVENT PANEL */
+.add-ev-panel{background:rgba(17,15,32,0.8);backdrop-filter:blur(16px);border:1px solid var(--bd2);border-radius:20px;padding:18px;margin-bottom:16px;display:none;}
+.add-ev-panel.open{display:block;}
+.add-ev-toggle{display:flex;align-items:center;gap:12px;cursor:pointer;padding:14px 16px;border:1px dashed var(--bd2);border-radius:14px;color:var(--tx3);font-size:13px;transition:all .25s;margin-bottom:14px;background:transparent;min-height:54px;}
+.add-ev-toggle:active{border-color:var(--pu);color:var(--pu2);background:rgba(108,99,184,0.06);}
+.add-ev-toggle svg{width:22px;height:22px;}
 
+/* NOTIFICACIONES */
 .notif-area{position:relative;z-index:10;}
-.notif-box{
-  background:rgba(17,15,32,0.88);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border:1px solid var(--pu);
-  border-radius:12px;
-  padding:14px 16px;
-  margin-bottom:8px;
-  animation:notifIn .3s ease-out;
-  box-shadow:0 4px 24px rgba(108,99,184,0.25);
-}
+.notif-box{background:rgba(17,15,32,0.88);backdrop-filter:blur(18px);border:1px solid var(--pu);border-radius:16px;padding:14px;margin-bottom:8px;animation:notifIn .3s ease-out;box-shadow:0 4px 24px rgba(108,99,184,0.25);}
 @keyframes notifIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
-.notif-ttl{font-size:13px;font-weight:600;color:var(--pu2);margin-bottom:3px;display:flex;align-items:center;gap:6px;}
-.notif-ttl svg{width:14px;height:14px;}
-.notif-bdy{font-size:11px;color:var(--tx2);}
-.notif-acts{display:flex;gap:6px;margin-top:10px;}
-.notif-time-badge{font-size:10px;color:var(--gr2);background:rgba(42,140,110,0.12);border:1px solid rgba(42,140,110,0.25);border-radius:6px;padding:2px 8px;display:inline-flex;align-items:center;gap:4px;margin-top:4px;}
-.notif-time-badge svg{width:10px;height:10px;}
+.notif-ttl{font-size:14px;font-weight:600;color:var(--pu2);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.notif-acts{display:flex;gap:8px;margin-top:10px;}
+.notif-time-badge{font-size:11px;color:var(--gr2);background:rgba(42,140,110,0.12);border:1px solid rgba(42,140,110,0.25);border-radius:20px;padding:4px 10px;display:inline-flex;align-items:center;gap:4px;margin-top:4px;}
 
-.perm-banner{background:rgba(42,140,110,0.1);border:1px solid rgba(42,140,110,0.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gr2);}
-.perm-banner svg{width:18px;height:18px;flex-shrink:0;}
+.perm-banner{background:rgba(42,140,110,0.1);border:1px solid rgba(42,140,110,0.3);border-radius:14px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--gr2);}
+.perm-banner svg{width:20px;height:20px;}
 
 /* PROYECTOS */
-.projects-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.projects-section {
-  background: rgba(28,25,46,0.55);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--bd);
-  border-radius: 14px;
-  padding: 14px;
-}
-.section-title {
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--pu2);
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border-bottom: 1px solid var(--bd);
-  padding-bottom: 8px;
-}
-.proj-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.proj-entry{
-  background:rgba(32,29,53,0.7);
-  border:1px solid var(--bd);
-  border-radius:10px;
-  padding:10px 12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  animation:fadeIn .2s ease-out;
-  flex-wrap:wrap;
-}
-.proj-dates {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.proj-date, .proj-end-date {
-  font-size: 10px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.proj-date { color: var(--gr2); }
-.proj-end-date { color: #f5c542; text-shadow: 0 0 2px rgba(245,197,66,0.3); }
-.proj-title{font-size:12px;color:var(--tx);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.projects-container{display:flex;flex-direction:column;gap:24px;}
+.projects-section{background:rgba(28,25,46,0.55);backdrop-filter:blur(10px);border:1px solid var(--bd);border-radius:16px;padding:14px;}
+.section-title{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--pu2);margin-bottom:12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bd);padding-bottom:10px;}
+.proj-list{display:flex;flex-direction:column;gap:10px;}
+.proj-entry{background:rgba(32,29,53,0.7);border:1px solid var(--bd);border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.proj-dates{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.proj-date,.proj-end-date{font-size:11px;font-weight:600;white-space:nowrap;}
+.proj-date{color:var(--gr2);}
+.proj-end-date{color:#f5c542;}
+.proj-title{font-size:13px;color:var(--tx);flex:1;min-width:120px;}
 .proj-actions{display:flex;gap:8px;margin-left:auto;align-items:center;}
-.proj-status-select{font-size:10px;background:var(--bg3);border:1px solid var(--bd);border-radius:7px;color:var(--tx2);padding:4px 7px;cursor:pointer;min-width:110px;}
-.proj-status-select option{background:var(--bg2);}
-.proj-del, .proj-edit{background:none;border:none;color:var(--tx3);cursor:pointer;padding:2px 4px;border-radius:4px;transition:all .15s;display:flex;align-items:center;}
-.proj-edit:hover{color:var(--pu2);background:rgba(108,99,184,0.12);}
-.proj-del:hover{color:#c0405a;background:rgba(180,40,60,0.12);}
-.proj-del svg, .proj-edit svg{width:12px;height:12px;}
-.proj-empty{font-size:11px;color:var(--tx3);text-align:center;padding:20px 0;}
-
-/* Modal editar proyecto */
-.edit-proj-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:500;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(4px);
-  align-items:center;
-  justify-content:center;
-}
+.proj-status-select{font-size:11px;background:var(--bg3);border:1px solid var(--bd);border-radius:10px;color:var(--tx2);padding:8px;min-width:120px;}
+.proj-del,.proj-edit{background:none;border:none;color:var(--tx3);cursor:pointer;padding:6px 8px;border-radius:10px;transition:all .15s;display:flex;align-items:center;}
+.proj-edit:active{color:var(--pu2);background:rgba(108,99,184,0.12);}
+.proj-del:active{color:#c0405a;background:rgba(180,40,60,0.12);}
+.proj-empty{font-size:12px;color:var(--tx3);text-align:center;padding:24px;}
+.edit-proj-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
 .edit-proj-overlay.open{display:flex;}
-.edit-proj-box{
-  background:rgba(22,20,38,0.98);
-  border:1px solid var(--bd2);
-  border-radius:16px;
-  padding:20px;
-  width:320px;
-  max-width:92vw;
-  box-shadow:0 12px 48px rgba(0,0,0,0.6);
-}
-.edit-proj-box .lbl{margin-top:10px;margin-bottom:5px;}
+.edit-proj-box{background:rgba(22,20,38,0.98);border:1px solid var(--bd2);border-radius:24px;padding:20px;width:92%;max-width:400px;box-shadow:0 12px 48px rgba(0,0,0,0.6);}
+.edit-proj-box .lbl{margin-top:12px;margin-bottom:6px;}
 
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
@@ -492,12 +284,12 @@ select option{background:var(--bg2);}
 </div>
 <div class="sec on" id="tab-alarmas">
   <div class="add-row" onclick="toggleDrum()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>Agregar alarma</span></div>
-  <div class="drum-wrap" id="drumWrap"><div class="drum-pickers"><div><div class="drum-vp" id="vpH"><div class="drum-hl"></div><div class="drum-track" id="trkH"></div></div></div><div class="drum-sep">:</div><div><div class="drum-vp" id="vpM"><div class="drum-hl"></div><div class="drum-track" id="trkM"></div></div></div></div><div class="drum-grid"><div><div class="lbl">Nombre</div><input type="text" id="dName" placeholder="Ej: Despertar" /></div><div><div class="lbl">Categoría</div><select id="dCat"><option value="rutina">Rutina diaria</option><option value="trabajo">Trabajo</option><option value="recordatorio">Recordatorio</option><option value="custom">Personalizada</option></select></div><div><div class="lbl">Días</div><select id="dDays"><option value="Todos los días">Todos los días</option><option value="Lun–Vie">Lun – Vie</option><option value="Sáb–Dom">Sáb – Dom</option><option value="Una vez">Una vez</option></select></div><div><div class="lbl">Sonido</div><div class="sound-selector"><select id="soundType"><option value="default">🔔 Sonido por defecto</option><option value="none">🔇 Mudo</option><option value="custom">📁 Personalizado</option></select><div id="customSoundDiv" class="sound-custom-file"><input type="file" id="customSoundFile" accept="audio/*" /><small style="display:block;color:var(--tx3);font-size:9px;">Selecciona un archivo de audio</small></div><button class="btn btn-xs" onclick="testSelectedSound()" style="margin-left:auto;">▶ Probar</button></div></div></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button class="btn btn-xs" onclick="toggleDrum()">Cancelar</button><button class="btn btn-g btn-xs" onclick="saveAlarm()">Guardar alarma</button></div></div>
+  <div class="drum-wrap" id="drumWrap"><div class="drum-pickers"><div><div class="drum-vp" id="vpH"><div class="drum-hl"></div><div class="drum-track" id="trkH"></div></div></div><div class="drum-sep">:</div><div><div class="drum-vp" id="vpM"><div class="drum-hl"></div><div class="drum-track" id="trkM"></div></div></div></div><div class="drum-grid"><div><div class="lbl">Nombre</div><input type="text" id="dName" placeholder="Ej: Despertar" /></div><div><div class="lbl">Categoría</div><select id="dCat"><option value="rutina">Rutina diaria</option><option value="trabajo">Trabajo</option><option value="recordatorio">Recordatorio</option><option value="custom">Personalizada</option></select></div><div><div class="lbl">Días</div><select id="dDays"><option value="Todos los días">Todos los días</option><option value="Lun–Vie">Lun – Vie</option><option value="Sáb–Dom">Sáb – Dom</option><option value="Una vez">Una vez</option></select></div></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;"><button class="btn btn-xs" onclick="toggleDrum()">Cancelar</button><button class="btn btn-g btn-xs" onclick="saveAlarm()">Guardar alarma</button></div></div>
   <div id="alarmGroups"></div>
-  <div class="alarm-edit-overlay" id="alarmEditOverlay"><div class="alarm-edit-box"><div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:14px;">Editar alarma</div><div class="drum-pickers" style="margin-bottom:16px;"><div class="drum-vp" id="vpHE" style="width:70px;height:120px;"><div class="drum-hl"></div><div class="drum-track" id="trkHE"></div></div><div class="drum-sep">:</div><div class="drum-vp" id="vpME" style="width:70px;height:120px;"><div class="drum-hl"></div><div class="drum-track" id="trkME"></div></div></div><div class="lbl">Nombre</div><input type="text" id="editName" placeholder="Nombre de la alarma" /><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;"><button class="btn btn-xs" onclick="closeAlarmEdit()">Cancelar</button><button class="btn btn-g btn-xs" onclick="saveAlarmEdit()">Guardar</button></div></div></div>
+  <div class="alarm-edit-overlay" id="alarmEditOverlay"><div class="alarm-edit-box"><div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:14px;">Editar alarma</div><div class="drum-pickers" style="margin-bottom:16px;"><div class="drum-vp" id="vpHE" style="width:80px;height:120px;"><div class="drum-hl"></div><div class="drum-track" id="trkHE"></div></div><div class="drum-sep">:</div><div class="drum-vp" id="vpME" style="width:80px;height:120px;"><div class="drum-hl"></div><div class="drum-track" id="trkME"></div></div></div><div class="lbl">Nombre</div><input type="text" id="editName" placeholder="Nombre de la alarma" /><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;"><button class="btn btn-xs" onclick="closeAlarmEdit()">Cancelar</button><button class="btn btn-g btn-xs" onclick="saveAlarmEdit()">Guardar</button></div></div></div>
 </div>
 <div class="sec" id="tab-calendario"><div class="cal-nav-row"><button class="cal-nbtn" onclick="chMon(-1)">◀</button><div class="cal-month" id="calLbl"></div><button class="cal-nbtn" onclick="chMon(1)">▶</button></div><div class="cgrid" id="cgrid"></div><div id="dayPanel" style="display:none;"></div></div>
-<div class="sec" id="tab-agenda"><div class="add-ev-toggle" onclick="openAddEventPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>Agregar actividad o cita</span></div><div class="add-ev-panel" id="addEvPanel"><div class="row2"><div><div class="lbl">Fecha</div><input type="date" id="evDate" /></div><div><div class="lbl">Hora</div><input type="text" id="evTimeDisplay" placeholder="08:00" readonly onclick="toggleTimeMini()" style="cursor:pointer;" /><input type="hidden" id="evTime" /><div id="timeMiniPop" style="display:none;position:absolute;z-index:200;background:rgba(17,15,32,0.95);backdrop-filter:blur(18px);border:1px solid var(--bd2);border-radius:12px;padding:14px 10px;"><div style="display:flex;justify-content:center;gap:6px;"><div class="drum-vp" id="vpEH" style="width:60px;height:110px;"><div class="drum-hl"></div><div class="drum-track" id="trkEH"></div></div><div style="font-size:24px;color:var(--pu2);">:</div><div class="drum-vp" id="vpEM" style="width:60px;height:110px;"><div class="drum-hl"></div><div class="drum-track" id="trkEM"></div></div></div><div style="display:flex;justify-content:flex-end;margin-top:6px;"><button class="btn btn-xs" onclick="closeTimeMini()">OK</button></div></div></div></div><div class="row1"><div class="lbl">Título</div><input type="text" id="evTitle" placeholder="Reunión, cita médica..." /></div><div class="row2"><div><div class="lbl">Descripción</div><input type="text" id="evDesc" placeholder="Opcional" /></div><div><div class="lbl">Categoría</div><select id="evCat"><option value="trabajo">Trabajo</option><option value="proyecto">Proyecto</option><option value="personal">Personal</option><option value="cita">Cita</option></select></div></div><div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-xs" onclick="cancelEditAndClose()">Cancelar</button><button class="btn btn-g" id="saveEventBtn" onclick="addOrUpdateEvent()">Guardar evento</button></div></div><div id="agList"></div></div>
+<div class="sec" id="tab-agenda"><div class="add-ev-toggle" onclick="openAddEventPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>Agregar actividad o cita</span></div><div class="add-ev-panel" id="addEvPanel"><div class="row2"><div><div class="lbl">Fecha</div><input type="date" id="evDate" /></div><div><div class="lbl">Hora</div><input type="text" id="evTimeDisplay" placeholder="08:00" readonly onclick="toggleTimeMini()" style="cursor:pointer;" /><input type="hidden" id="evTime" /><div id="timeMiniPop" style="display:none;position:absolute;z-index:200;background:rgba(17,15,32,0.95);backdrop-filter:blur(18px);border:1px solid var(--bd2);border-radius:16px;padding:14px;"><div style="display:flex;justify-content:center;gap:6px;"><div class="drum-vp" id="vpEH" style="width:70px;height:110px;"><div class="drum-hl"></div><div class="drum-track" id="trkEH"></div></div><div style="font-size:26px;color:var(--pu2);">:</div><div class="drum-vp" id="vpEM" style="width:70px;height:110px;"><div class="drum-hl"></div><div class="drum-track" id="trkEM"></div></div></div><div style="display:flex;justify-content:flex-end;margin-top:8px;"><button class="btn btn-xs" onclick="closeTimeMini()">OK</button></div></div></div></div><div class="row1"><div class="lbl">Título</div><input type="text" id="evTitle" placeholder="Reunión, cita médica..." /></div><div class="row2"><div><div class="lbl">Descripción</div><input type="text" id="evDesc" placeholder="Opcional" /></div><div><div class="lbl">Categoría</div><select id="evCat"><option value="trabajo">Trabajo</option><option value="proyecto">Proyecto</option><option value="personal">Personal</option><option value="cita">Cita</option></select></div></div><div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-xs" onclick="cancelEditAndClose()">Cancelar</button><button class="btn btn-g" id="saveEventBtn" onclick="addOrUpdateEvent()">Guardar evento</button></div></div><div id="agList"></div></div>
 <div class="sec" id="tab-proyectos">
   <div class="card" style="margin-bottom:14px;"><div class="lbl">Nuevo proyecto</div><div class="row2"><div><div class="lbl">Título del video</div><input type="text" id="projTitle" placeholder="Nombre del proyecto..." /></div><div><div class="lbl">Fecha inicio</div><input type="date" id="projDate" /></div></div><div style="display:flex;justify-content:flex-end;"><button class="btn btn-g btn-xs" onclick="addProject()">+ Agregar proyecto</button></div></div>
   <div class="projects-container">
@@ -514,6 +306,7 @@ select option{background:var(--bg2);}
 <div class="edit-proj-overlay" id="editProjOverlay"><div class="edit-proj-box"><div class="lbl" style="margin-top:0;">Editar proyecto</div><div class="lbl">Título</div><input type="text" id="editProjTitle" /><div class="lbl">Fecha inicio</div><input type="date" id="editProjDate" /><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;"><button class="btn btn-xs" onclick="closeEditProj()">Cancelar</button><button class="btn btn-g btn-xs" onclick="saveEditProj()">Guardar</button></div></div></div>
 </div>
 <script>
+// Helper functions
 const ls=k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}};
 const lss=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const gA=()=>ls('os2_alarms')||[];
@@ -527,78 +320,11 @@ const sPr=v=>lss('os2_projects',v);
 const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const ALARM_COLS=['#6c63b8','#39ff14','#8a5a8a','#b06a20','#00ced1','#8c3050','#cc44ff','#1a1a2e','#f0f0f0','#ffe600'];
 const PCOLS=['#6c63b8','#2a8c6e','#8a5a8a','#8c6a2a','#2a608c','#8c3050'];
-let calDate=new Date(), selDay=null, selPCol=PCOLS[0], drumSnd={type:'default',url:null}, dH=7,dM=0, evH=8,evM=0, editH=7,editM=0, editIdx=-1;
+let calDate=new Date(), selDay=null, selPCol=PCOLS[0], dH=7,dM=0, evH=8,evM=0, editH=7,editM=0, editIdx=-1;
 let editingEventId = null;
 let editingProjId = null;
 
 function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-// Funciones de sonido
-function updateCustomSoundVisibility(){
-  const sel = document.getElementById('soundType');
-  const customDiv = document.getElementById('customSoundDiv');
-  if(sel && customDiv) customDiv.classList.toggle('open', sel.value === 'custom');
-}
-function testSelectedSound(){
-  const sel = document.getElementById('soundType');
-  const type = sel.value;
-  if(type === 'none') return;
-  if(type === 'default') playDefaultBeep();
-  else if(type === 'custom'){
-    const fileInput = document.getElementById('customSoundFile');
-    if(fileInput.files.length > 0){
-      const url = URL.createObjectURL(fileInput.files[0]);
-      const audio = new Audio(url);
-      audio.play().catch(e=>console.log("Error playing custom sound", e));
-    } else {
-      playDefaultBeep();
-    }
-  }
-}
-function playDefaultBeep(){
-  try{
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g);
-    g.connect(ctx.destination);
-    o.type = 'sine';
-    o.frequency.value = 880;
-    g.gain.setValueAtTime(0.2, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
-    o.start();
-    o.stop(ctx.currentTime+0.5);
-  } catch(e){}
-}
-function getCurrentSoundObject(){
-  const sel = document.getElementById('soundType');
-  const type = sel.value;
-  let url = null;
-  if(type === 'custom'){
-    const fileInput = document.getElementById('customSoundFile');
-    if(fileInput.files.length > 0){
-      url = URL.createObjectURL(fileInput.files[0]);
-    }
-  }
-  return {type, url};
-}
-function setSoundSelectorFromObject(sound){
-  const sel = document.getElementById('soundType');
-  if(!sel) return;
-  sel.value = sound.type || 'default';
-  updateCustomSoundVisibility();
-  if(sound.type === 'custom' && sound.url){
-    // No podemos setear el file input desde una URL, solo mostramos que es personalizado
-  }
-}
-function playSoundByObject(sound){
-  if(!sound || sound.type === 'none') return;
-  if(sound.type === 'default') playDefaultBeep();
-  else if(sound.type === 'custom' && sound.url){
-    const audio = new Audio(sound.url);
-    audio.play().catch(e=>console.log("Error playing custom sound", e));
-  }
-}
 
 setInterval(()=>{const n=new Date();document.getElementById('clk').textContent=n.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});},1000);
 function goTab(id,el){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById('tab-'+id).classList.add('on');el.classList.add('on');if(id==='calendario')renderCal();if(id==='agenda')renderAgenda();if(id==='alarmas')renderAlarms();if(id==='proyectos')renderProjects();}
@@ -609,15 +335,15 @@ checkPermBanner();
 function makeDrum(trackId,vpId,items,initVal,cb){const track=document.getElementById(trackId),vp=document.getElementById(vpId);const PAD=2,IH=42,HL_TOP=45;track.innerHTML='';[...Array(PAD).fill(null),...items,...Array(PAD).fill(null)].forEach(v=>{const el=document.createElement('div');el.className='drum-item';el.textContent=v!==null?v:'';track.appendChild(el);});let cur=initVal;const setPos=idx=>{cur=Math.max(0,Math.min(items.length-1,idx));track.style.transform=`translateY(${HL_TOP-(PAD+cur)*IH}px)`;track.querySelectorAll('.drum-item').forEach((el,i)=>el.classList.toggle('sel',i-PAD===cur));cb(cur);};setPos(initVal);let sy=0,sc=0,drag=false;const onMove=e=>{if(!drag)return;const y=e.touches?e.touches[0].clientY:e.clientY;const diff=y-sy;setPos(Math.round(sc-diff/IH));};const onEnd=()=>{drag=false;};vp.addEventListener('mousedown',e=>{drag=true;sy=e.clientY;sc=cur;e.preventDefault();});vp.addEventListener('touchstart',e=>{drag=true;sy=e.touches[0].clientY;sc=cur;},{passive:true});document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onEnd);document.addEventListener('touchmove',e=>{if(drag){onMove(e);e.preventDefault();}},{passive:false});document.addEventListener('touchend',onEnd);}
 function initDrums(){const H=Array.from({length:24},(_,i)=>String(i).padStart(2,'0')),M=Array.from({length:60},(_,i)=>String(i).padStart(2,'0'));makeDrum('trkH','vpH',H,dH,v=>{dH=v;});makeDrum('trkM','vpM',M,dM,v=>{dM=v;});}
 let drumOpen=false;function toggleDrum(){drumOpen=!drumOpen;document.getElementById('drumWrap').className='drum-wrap'+(drumOpen?' open':'');if(drumOpen)initDrums();}
-function saveAlarm(){const name=document.getElementById('dName').value.trim();if(!name){document.getElementById('dName').focus();return;}const hh=String(dH).padStart(2,'0'),mm=String(dM).padStart(2,'0');const alarms=gA();const sound = getCurrentSoundObject();alarms.push({id:Date.now(),time:hh+':'+mm,name,cat:document.getElementById('dCat').value,days:document.getElementById('dDays').value,sound:sound,on:true});sA(alarms);document.getElementById('dName').value='';toggleDrum();renderAlarms();}
-function renderAlarms(){const alarms=gA(),container=document.getElementById('alarmGroups');if(!alarms.length){container.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Sin alarmas aún.</div>';return;}container.innerHTML=`<div class="alarm-grid">${alarms.map((a,i)=>{const col=a.color||ALARM_COLS[0];const soundLabel = a.sound ? (a.sound.type==='default'?'🔔 Por defecto':(a.sound.type==='none'?'🔇 Mudo':'📁 Personalizado')) : '🔔 Por defecto';return`<div class="alarm-card" style="background:${col}22;border-color:${col}55;"><div class="alarm-card-time" style="color:${col};">${a.time}</div><div class="alarm-card-name" style="color:${col}cc;">${a.name}</div><div style="font-size:8px;color:${col}99;">${soundLabel}</div><div class="alarm-card-actions"><div class="tog${a.on?' on':''}" onclick="togA(${i})"></div><button class="xbtn" onclick="delA(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg></button><button class="xbtn" onclick="openAlarmEdit(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><div style="position:relative;"><button class="xbtn" onclick="toggleAlarmCol(event,${i})" style="color:${col};"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></button><div class="alarm-col-popup" id="acp-${i}">${ALARM_COLS.map(c=>`<div class="alarm-col-swatch${c===col?' sel':''}" style="background:${c};" onclick="setAlarmCol(event,${i},'${c}')"></div>`).join('')}</div></div></div></div>`}).join('')}</div>`;}
+function saveAlarm(){const name=document.getElementById('dName').value.trim();if(!name){document.getElementById('dName').focus();return;}const hh=String(dH).padStart(2,'0'),mm=String(dM).padStart(2,'0');const alarms=gA();alarms.push({id:Date.now(),time:hh+':'+mm,name,cat:document.getElementById('dCat').value,days:document.getElementById('dDays').value,on:true});sA(alarms);document.getElementById('dName').value='';toggleDrum();renderAlarms();}
+function renderAlarms(){const alarms=gA(),container=document.getElementById('alarmGroups');if(!alarms.length){container.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Sin alarmas aún.</div>';return;}container.innerHTML=`<div class="alarm-grid">${alarms.map((a,i)=>{const col=a.color||ALARM_COLS[0];return`<div class="alarm-card" style="background:${col}22;border-color:${col}55;"><div class="alarm-card-time" style="color:${col};">${a.time}</div><div class="alarm-card-name" style="color:${col}cc;">${a.name}</div><div class="alarm-card-actions"><div class="tog${a.on?' on':''}" onclick="togA(${i})"></div><button class="xbtn" onclick="delA(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg></button><button class="xbtn" onclick="openAlarmEdit(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><div style="position:relative;"><button class="xbtn" onclick="toggleAlarmCol(event,${i})" style="color:${col};"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></button><div class="alarm-col-popup" id="acp-${i}">${ALARM_COLS.map(c=>`<div class="alarm-col-swatch${c===col?' sel':''}" style="background:${c};" onclick="setAlarmCol(event,${i},'${c}')"></div>`).join('')}</div></div></div></div>`}).join('')}</div>`;}
 let openColIdx=-1;function toggleAlarmCol(e,i){e.stopPropagation();if(openColIdx>=0){const prev=document.getElementById('acp-'+openColIdx);if(prev)prev.classList.remove('open');}openColIdx=openColIdx===i?-1:i;if(openColIdx>=0){const pop=document.getElementById('acp-'+i);if(pop)pop.classList.add('open');}}document.addEventListener('click',function(e){if(openColIdx>=0){const pop=document.getElementById('acp-'+openColIdx);if(pop && !pop.contains(e.target)){if(pop)pop.classList.remove('open');openColIdx=-1;}}});
 function setAlarmCol(e,i,col){e.stopPropagation();const alarms=gA();alarms[i].color=col;sA(alarms);if(openColIdx>=0){const pop=document.getElementById('acp-'+openColIdx);if(pop)pop.classList.remove('open');openColIdx=-1;}renderAlarms();}
 function togA(i){const a=gA();a[i].on=!a[i].on;sA(a);renderAlarms();}function delA(i){if(!confirm('¿Eliminar?'))return;const a=gA();a.splice(i,1);sA(a);renderAlarms();}
 function openAlarmEdit(i){editIdx=i;const a=gA()[i];const[hStr,mStr]=a.time.split(':');editH=parseInt(hStr,10);editM=parseInt(mStr,10);document.getElementById('editName').value=a.name;document.getElementById('alarmEditOverlay').classList.add('open');const H=Array.from({length:24},(_,j)=>String(j).padStart(2,'0')),M=Array.from({length:60},(_,j)=>String(j).padStart(2,'0'));makeDrum('trkHE','vpHE',H,editH,v=>{editH=v;});makeDrum('trkME','vpME',M,editM,v=>{editM=v;});}function closeAlarmEdit(){editIdx=-1;document.getElementById('alarmEditOverlay').classList.remove('open');}
 function saveAlarmEdit(){if(editIdx<0)return;const alarms=gA();alarms[editIdx].name=document.getElementById('editName').value.trim()||alarms[editIdx].name;alarms[editIdx].time=String(editH).padStart(2,'0')+':'+String(editM).padStart(2,'0');sA(alarms);closeAlarmEdit();renderAlarms();}
 setInterval(()=>{const n=new Date();if(n.getSeconds()>8)return;const hhmm=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');gA().forEach(a=>{if(a.on&&a.time===hhmm){showNotif(a);}});},15000);
-function showNotif(a){const area=document.getElementById('notifArea');const box=document.createElement('div');box.className='notif-box';box.innerHTML=`<div class="notif-ttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>${a.name}</div><div class="notif-bdy">${a.days}</div><div class="notif-time-badge">⏱ ${a.time}</div><div class="notif-acts"><button class="btn btn-xs" onclick="this.closest('.notif-box').remove()">Descartar</button></div>`;area.prepend(box);if(a.sound && a.sound.type!=='none') playSoundByObject(a.sound);sendPushNotif(a.name,`Alarma a las ${a.time}`);setTimeout(()=>box.remove&&box.remove(),14000);}
+function showNotif(a){const area=document.getElementById('notifArea');const box=document.createElement('div');box.className='notif-box';box.innerHTML=`<div class="notif-ttl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>${a.name}</div><div class="notif-bdy">${a.days}</div><div class="notif-time-badge">⏱ ${a.time}</div><div class="notif-acts"><button class="btn btn-xs" onclick="this.closest('.notif-box').remove()">Descartar</button></div>`;area.prepend(box);sendPushNotif(a.name,`Alarma a las ${a.time}`);setTimeout(()=>box.remove&&box.remove(),14000);}
 function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function chMon(d){calDate.setMonth(calDate.getMonth()+d);renderCal();}
 function renderCal(){document.getElementById('calLbl').textContent=MONTHS[calDate.getMonth()]+' '+calDate.getFullYear();const g=document.getElementById('cgrid');g.innerHTML=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(d=>`<div class="dow">${d}</div>`).join('');const y=calDate.getFullYear(),m=calDate.getMonth();let dow=new Date(y,m,1).getDay();dow=dow===0?6:dow-1;const dim=new Date(y,m+1,0).getDate();const today=new Date();const evs=gEv();for(let i=0;i<dow;i++){g.innerHTML+=`<div class="cday dim"><div class="dnum">${new Date(y,m,1-(dow-i)).getDate()}</div></div>`;}for(let d=1;d<=dim;d++){const date=new Date(y,m,d);const ds=dStr(date);const isToday=date.toDateString()===today.toDateString();const isSel=selDay===ds;const dd=gD(ds);const posts=dd.postits||[];const dots=posts.slice(0,10).map(p=>`<div class="ddot" style="background:${p.color};"></div>`).join('');const dayEvents=evs.filter(e=>e._ds===ds).slice(0,3);
@@ -910,13 +636,10 @@ function createAlarmFromEvent(eventId){
   const ev = gEv().find(e=>e.id===eventId);
   if(!ev) return;
   const title = ev.title;
-  const time = ev.time; // formato HH:MM
-  // Crear nueva alarma
+  const time = ev.time;
   const alarms = gA();
-  const sound = {type:'default', url:null};
-  alarms.push({id:Date.now(), time:time, name:title, cat:'recordatorio', days:'Una vez', sound:sound, on:true});
+  alarms.push({id:Date.now(), time:time, name:title, cat:'recordatorio', days:'Una vez', on:true});
   sA(alarms);
-  // Cambiar a pestaña Alarmas
   const alarmTab = document.querySelector('.tab[onclick*="alarmas"]');
   if(alarmTab) alarmTab.click();
   renderAlarms();
@@ -1174,21 +897,13 @@ let timeMiniOpen=false;
 function toggleTimeMini(){timeMiniOpen=!timeMiniOpen;const pop=document.getElementById('timeMiniPop');pop.style.display=timeMiniOpen?'block':'none';if(timeMiniOpen){const H=Array.from({length:24},(_,i)=>String(i).padStart(2,'0')),M=Array.from({length:60},(_,i)=>String(i).padStart(2,'0'));makeDrum('trkEH','vpEH',H,evH,v=>{evH=v;updateEvTime();});makeDrum('trkEM','vpEM',M,evM,v=>{evM=v;updateEvTime();});}}
 function closeTimeMini(){timeMiniOpen=false;document.getElementById('timeMiniPop').style.display='none';}
 function updateEvTime(){const hh=String(evH).padStart(2,'0'),mm=String(evM).padStart(2,'0');document.getElementById('evTimeDisplay').value=hh+':'+mm;document.getElementById('evTime').value=hh+':'+mm;}
-// Event listeners
+// Cerrar modales al tocar fuera
 document.getElementById('alarmEditOverlay').addEventListener('click', function(e){ if(e.target === this) closeAlarmEdit(); });
 document.getElementById('editProjOverlay').addEventListener('click', function(e){ if(e.target === this) closeEditProj(); });
 document.addEventListener('click', function(e){
   const timePop = document.getElementById('timeMiniPop');
   if(timePop && timePop.style.display === 'block' && !timePop.contains(e.target) && e.target !== document.getElementById('evTimeDisplay')){
     closeTimeMini();
-  }
-});
-document.getElementById('soundType')?.addEventListener('change', updateCustomSoundVisibility);
-document.getElementById('customSoundFile')?.addEventListener('change', function(){
-  if(this.files.length > 0){
-    const sel = document.getElementById('soundType');
-    if(sel) sel.value = 'custom';
-    updateCustomSoundVisibility();
   }
 });
 renderAlarms();renderCal();renderAgenda();renderProjects();
