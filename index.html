@@ -87,7 +87,6 @@ input[type=text],input[type=url],input[type=date],select,textarea{
   font-family:'Outfit',sans-serif;
 }
 input:focus,select:focus,textarea:focus{border-color:var(--pu);box-shadow:0 0 0 2px rgba(108,99,184,0.12);}
-/* Estilo oscuro para el date picker */
 input[type=date]{
   color-scheme: dark;
   background: var(--bg3);
@@ -192,8 +191,15 @@ select option{background:var(--bg2);}
 .day-header{display:flex;justify-content:space-between;align-items:center;}
 .dnum{font-size:11px;color:var(--tx3);font-weight:500;}
 .cday.today .dnum{color:var(--gr2);font-weight:700;}
-.day-dots{display:flex;gap:2px;flex-wrap:wrap;margin-left:4px;}
-.ddot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 2px currentColor;}
+.day-dots{display:flex;gap:3px;flex-wrap:wrap;margin-left:4px;}
+.ddot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  flex-shrink:0;
+  box-shadow:0 0 3px currentColor;
+  filter:brightness(1.2);
+}
 .event-chips {
   display: flex;
   flex-wrap: wrap;
@@ -234,6 +240,10 @@ select option{background:var(--bg2);}
 @keyframes panelIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 .dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .dp-ttl{font-size:15px;color:var(--pu2);letter-spacing:1px;font-weight:600;}
+.dp-buttons{display:flex;gap:8px;}
+.postit-section {
+  margin-bottom: 20px;
+}
 .hr-row{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(108,99,184,0.06);}
 .hr-lbl{
   font-size:10px;
@@ -243,10 +253,12 @@ select option{background:var(--bg2);}
   align-items:center;
   gap:3px;
   transition:all 0.1s;
-  cursor:pointer;
   background:transparent;
   border:none;
   font-family:'Outfit',sans-serif;
+}
+.hr-lbl.clickable{
+  cursor:pointer;
 }
 .hr-lbl.highlight{color:var(--gr2);text-shadow:0 0 3px var(--gr);font-weight:600;}
 .hr-inp{
@@ -262,9 +274,6 @@ select option{background:var(--bg2);}
   transition:border-color .2s;
 }
 .hr-inp:focus{border-bottom-color:var(--pu);}
-.postit-section {
-  margin-top: 20px;
-}
 .postit-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0;}
 .postit-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
 .postit{border-radius:8px;padding:8px 10px;min-width:92px;max-width:130px;min-height:66px;font-size:11px;position:relative;word-break:break-word;backdrop-filter:blur(6px);}
@@ -536,9 +545,60 @@ function chMon(d){calDate.setMonth(calDate.getMonth()+d);renderCal();}
 function renderCal(){document.getElementById('calLbl').textContent=MONTHS[calDate.getMonth()]+' '+calDate.getFullYear();const g=document.getElementById('cgrid');g.innerHTML=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(d=>`<div class="dow">${d}</div>`).join('');const y=calDate.getFullYear(),m=calDate.getMonth();let dow=new Date(y,m,1).getDay();dow=dow===0?6:dow-1;const dim=new Date(y,m+1,0).getDate();const today=new Date();const evs=gEv();for(let i=0;i<dow;i++){g.innerHTML+=`<div class="cday dim"><div class="dnum">${new Date(y,m,1-(dow-i)).getDate()}</div></div>`;}for(let d=1;d<=dim;d++){const date=new Date(y,m,d);const ds=dStr(date);const isToday=date.toDateString()===today.toDateString();const isSel=selDay===ds;const dd=gD(ds);const posts=dd.postits||[];const dots=posts.slice(0,3).map(p=>`<div class="ddot" style="background:${p.color};"></div>`).join('');const dayEvents=evs.filter(e=>e._ds===ds).slice(0,3);
 const chipsHtml=dayEvents.map(e=>`<span class="dchip b-${e.cat}">${e.time?e.time.substring(0,5):'--:--'}</span>`).join('');
 g.innerHTML+=`<div class="cday${isToday?' today':''}${isSel?' sel':''}" onclick="openDay('${ds}','${d} de ${MONTHS[m]}')"><div class="day-header"><span class="dnum">${d}</span><div class="day-dots">${dots}</div></div><div class="event-chips">${chipsHtml}</div></div>`;}const rem=(7-(dow+dim)%7)%7;for(let i=1;i<=rem;i++){g.innerHTML+=`<div class="cday dim"><div class="dnum">${new Date(y,m+1,i).getDate()}</div></div>`;}}
-function guardarYDia(ds,label){const panelDiv=document.querySelector('.day-panel');if(panelDiv){const rows=panelDiv.querySelectorAll('.hr-row');rows.forEach(row=>{const lblElem=row.querySelector('.hr-lbl');const inp=row.querySelector('.hr-inp');if(lblElem && inp){const hora=lblElem.innerText.replace('⏱','').trim();const newTitle = inp.value.trim();const evs = gEv();const existingIdx = evs.findIndex(e=>e._ds===ds && e.time===hora);if(newTitle === ""){if(existingIdx !== -1){const deletedId = evs[existingIdx].id;evs.splice(existingIdx,1);sEv(evs);deleteEventFromDOM(deletedId);}} else {if(existingIdx !== -1){evs[existingIdx].title = newTitle;sEv(evs);updateEventInDOM(evs[existingIdx]);} else {const newEv = {id:Date.now(), date:ds, time:hora, title:newTitle, desc:"", cat:"trabajo", _ds:ds};evs.push(newEv);sEv(evs);addEventToDOM(newEv);}}const d=gD(ds);if(!d.hours)d.hours={};d.hours[hora]=newTitle;sD(ds,d);}});}closeDay();renderCal();}
-function openDay(ds,label){selDay=ds;const panel=document.getElementById('dayPanel');panel.style.display='block';const dd=gD(ds);const dayEvs=gEv().filter(e=>e._ds===ds).reduce((map,ev)=>{map[ev.time]=ev.title; return map;},{});let hrRows='';for(let h=6;h<=23;h++){const lbl=h.toString().padStart(2,'0')+':00';const val=(dd.hours||{})[lbl]||'';const eventTitle = dayEvs[lbl] || ''; const displayVal = eventTitle || val; const hasEvent = !!eventTitle;hrRows+=`<div class="hr-row"><button class="hr-lbl ${hasEvent?'highlight':''}" onclick="gotoAgendaWithTime('${ds}','${lbl}')">⏱ ${lbl}</button><input class="hr-inp" value="${displayVal.replace(/"/g,'&quot;')}" placeholder="${hasEvent?'Editar evento...':'Nota o evento...'}" /></div>`;}const cpicker=PCOLS.map(c=>`<div class="cdot${c===selPCol?' sel':''}" data-col="${c}" style="background:${c};" onclick="sPCol('${c}','${ds}','${label}')"></div>`).join('');const postits=(dd.postits||[]).map(p=>`<div class="postit" style="background:${p.color}1a;border:1px solid ${p.color}44;color:${p.color};"><button class="postit-x" onclick="delPostit('${ds}',${p.id},'${label}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>${p.text}</div>`).join('')||'<span style="font-size:11px;color:var(--tx3);">Sin notas</span>';
-panel.innerHTML=`<div class="day-panel"><div class="dp-head"><div class="dp-ttl">📌 ${label}</div><button class="btn btn-g btn-xs" onclick="guardarYDia('${ds}','${label}')">Guardar y cerrar</button></div><div class="lbl">Horario personal</div>${hrRows}<div class="postit-section"><div class="lbl">📝 Post-its</div><div class="postit-row"><input type="text" id="piTxt" placeholder="Nota rápida..." style="flex:1;" /><div style="display:flex;gap:5px;">${cpicker}</div><button class="btn btn-g btn-xs" onclick="addPostit('${ds}','${label}')">+ Post-it</button></div><div class="postit-grid">${postits}</div></div></div>`;renderCal();}
+function guardarYDia(ds,label){ // Guarda los cambios pero NO cierra el panel
+  const panelDiv=document.querySelector('.day-panel');
+  if(panelDiv){
+    const rows=panelDiv.querySelectorAll('.hr-row');
+    rows.forEach(row=>{
+      const lblElem=row.querySelector('.hr-lbl');
+      const inp=row.querySelector('.hr-inp');
+      if(lblElem && inp){
+        const hora=lblElem.innerText.replace('⏱','').trim();
+        const newTitle = inp.value.trim();
+        const evs = gEv();
+        const existingIdx = evs.findIndex(e=>e._ds===ds && e.time===hora);
+        if(newTitle === ""){
+          if(existingIdx !== -1){
+            const deletedId = evs[existingIdx].id;
+            evs.splice(existingIdx,1);
+            sEv(evs);
+            deleteEventFromDOM(deletedId);
+          }
+          // Quitar highlight si estaba
+          lblElem.classList.remove('highlight');
+          lblElem.classList.remove('clickable');
+          lblElem.removeAttribute('onclick');
+        } else {
+          if(existingIdx !== -1){
+            evs[existingIdx].title = newTitle;
+            sEv(evs);
+            updateEventInDOM(evs[existingIdx]);
+          } else {
+            const newEv = {id:Date.now(), date:ds, time:hora, title:newTitle, desc:"", cat:"trabajo", _ds:ds};
+            evs.push(newEv);
+            sEv(evs);
+            addEventToDOM(newEv);
+          }
+          // Añadir highlight y hacer clickable
+          lblElem.classList.add('highlight');
+          lblElem.classList.add('clickable');
+          lblElem.setAttribute('onclick', `gotoAgendaWithTime('${ds}','${hora}')`);
+        }
+        const d=gD(ds);
+        if(!d.hours)d.hours={};
+        d.hours[hora]=newTitle;
+        sD(ds,d);
+      }
+    });
+  }
+  renderCal();
+  renderAgenda();
+  sendPushNotif('Cambios guardados', 'Los eventos y horarios se han actualizado');
+}
+function openDay(ds,label){selDay=ds;const panel=document.getElementById('dayPanel');panel.style.display='block';const dd=gD(ds);const dayEvs=gEv().filter(e=>e._ds===ds).reduce((map,ev)=>{map[ev.time]=ev.title; return map;},{});const cpicker=PCOLS.map(c=>`<div class="cdot${c===selPCol?' sel':''}" data-col="${c}" style="background:${c};" onclick="sPCol('${c}','${ds}','${label}')"></div>`).join('');const postits=(dd.postits||[]).map(p=>`<div class="postit" style="background:${p.color}1a;border:1px solid ${p.color}44;color:${p.color};"><button class="postit-x" onclick="delPostit('${ds}',${p.id},'${label}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>${p.text}</div>`).join('')||'<span style="font-size:11px;color:var(--tx3);">Sin notas</span>';
+let hrRows='';for(let h=6;h<=23;h++){const lbl=h.toString().padStart(2,'0')+':00';const val=(dd.hours||{})[lbl]||'';const eventTitle = dayEvs[lbl] || ''; const displayVal = eventTitle || val; const hasEvent = !!eventTitle;const clickAttr = hasEvent ? `onclick="gotoAgendaWithTime('${ds}','${lbl}')"` : '';
+hrRows+=`<div class="hr-row"><button class="hr-lbl ${hasEvent?'highlight clickable':''}" ${clickAttr}>⏱ ${lbl}</button><input class="hr-inp" value="${displayVal.replace(/"/g,'&quot;')}" placeholder="..." /></div>`;}
+panel.innerHTML=`<div class="day-panel"><div class="dp-head"><div class="dp-ttl">📌 ${label}</div><div class="dp-buttons"><button class="btn btn-g btn-xs" onclick="guardarYDia('${ds}','${label}')">Guardar</button><button class="btn btn-xs" onclick="closeDay()">Cerrar</button></div></div><div class="postit-section"><div class="lbl">📝 Post-its</div><div class="postit-row"><input type="text" id="piTxt" placeholder="Nota rápida..." style="flex:1;" /><div style="display:flex;gap:5px;">${cpicker}</div><button class="btn btn-g btn-xs" onclick="addPostit('${ds}','${label}')">+ Post-it</button></div><div class="postit-grid">${postits}</div></div><div class="lbl">Horario personal</div>${hrRows}</div>`;renderCal();}
 function gotoAgendaWithTime(dateStr, timeStr){
   const agendaTab = document.querySelector('.tab[onclick*="agenda"]');
   if(agendaTab) agendaTab.click();
@@ -683,6 +743,8 @@ function addOrUpdateEvent(){
               if (oldInp) oldInp.value = '';
               const oldBadge = oldRow.querySelector('.hr-lbl');
               if (oldBadge) oldBadge.classList.remove('highlight');
+              oldBadge.classList.remove('clickable');
+              oldBadge.removeAttribute('onclick');
             }
           }
           const targetRow = Array.from(panelDiv.querySelectorAll('.hr-row')).find(row => row.querySelector('.hr-lbl')?.innerText.includes(time));
@@ -690,7 +752,11 @@ function addOrUpdateEvent(){
             const inp = targetRow.querySelector('.hr-inp');
             if(inp) inp.value = title;
             const badge = targetRow.querySelector('.hr-lbl');
-            if(badge) badge.classList.add('highlight');
+            if(badge) {
+              badge.classList.add('highlight');
+              badge.classList.add('clickable');
+              badge.setAttribute('onclick', `gotoAgendaWithTime('${dateVal}','${time}')`);
+            }
           }
         }
       }
@@ -715,7 +781,11 @@ function addOrUpdateEvent(){
           const inp = targetRow.querySelector('.hr-inp');
           if(inp) inp.value = title;
           const badge = targetRow.querySelector('.hr-lbl');
-          if(badge) badge.classList.add('highlight');
+          if(badge) {
+            badge.classList.add('highlight');
+            badge.classList.add('clickable');
+            badge.setAttribute('onclick', `gotoAgendaWithTime('${dateVal}','${time}')`);
+          }
         }
       }
     }
@@ -747,7 +817,11 @@ function delEv(id){
           const inp = row.querySelector('.hr-inp');
           if (inp) inp.value = '';
           const badge = row.querySelector('.hr-lbl');
-          if (badge) badge.classList.remove('highlight');
+          if (badge) {
+            badge.classList.remove('highlight');
+            badge.classList.remove('clickable');
+            badge.removeAttribute('onclick');
+          }
         }
       }
     }
